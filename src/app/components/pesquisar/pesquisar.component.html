@@ -1,0 +1,93 @@
+<main class="flex-1 flex flex-col w-full max-w-3xl mx-auto px-4 py-8 gap-6">
+  <!-- Barra de pesquisa (estilo explorar) -->
+  <div class="sticky top-14 lg:top-0 z-30 bg-background pb-2">
+    <div class="relative">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+      <input
+        type="text"
+        [value]="termoPesquisa()"
+        (input)="aoDigitar($event)"
+        placeholder="Buscar doações por título ou descrição..."
+        aria-label="Pesquisar doações"
+        class="w-full bg-surface-container-lowest border border-outline-variant rounded-full py-3 pl-12 pr-12 font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all"
+      />
+      @if (termoPesquisa()) {
+        <button
+          type="button"
+          (click)="limparPesquisa()"
+          aria-label="Limpar pesquisa"
+          class="absolute right-3 top-1/2 -translate-y-1/2 flex p-1 rounded-full text-outline hover:text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95"
+        >
+          <span class="material-symbols-outlined text-[20px]">cancel</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (mensagemErro()) {
+    <div class="bg-error-container text-on-error-container p-4 rounded-lg text-center">
+      {{ mensagemErro() }}
+    </div>
+  }
+
+  @if (isLoading()) {
+    <!-- Carregando -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (i of [1, 2, 3]; track i) {
+        <article class="bg-surface-container-lowest border border-outline-variant border-dashed rounded-xl overflow-hidden opacity-60">
+          <div class="w-full aspect-square bg-surface-container-low"></div>
+          <div class="p-4 flex flex-col gap-3">
+            <div class="h-5 w-3/4 bg-surface-variant rounded animate-pulse"></div>
+            <div class="h-3 w-full bg-surface-variant rounded animate-pulse"></div>
+            <div class="h-3 w-2/3 bg-surface-variant rounded animate-pulse"></div>
+          </div>
+        </article>
+      }
+    </div>
+  } @else {
+    @if (resultados().length === 0) {
+      <!-- Sem resultados -->
+      <div class="flex flex-col items-center justify-center py-16 text-center">
+        <span class="material-symbols-outlined text-[64px] text-outline mb-4">search_off</span>
+        <h2 class="font-headline-md text-headline-md text-on-surface mb-2">Nada encontrado</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant">{{ mensagemVazia() }}</p>
+      </div>
+    } @else {
+      <!-- Resultados -->
+      @if (termoPesquisa().trim()) {
+        <p class="font-label-md text-label-md text-on-surface-variant">
+          {{ resultados().length }} {{ resultados().length === 1 ? 'item encontrado' : 'itens encontrados' }}
+        </p>
+      }
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        @for (doacao of resultados(); track doacao.id_item) {
+          <article class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+            <div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center">
+              <div class="flex flex-col items-center gap-2 text-outline">
+                <span class="material-symbols-outlined text-[48px]">image</span>
+                <span class="font-label-sm text-label-sm">Sem imagem</span>
+              </div>
+              <div class="absolute top-3 left-3 bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-1 rounded-full shadow-sm">
+                Disponível
+              </div>
+            </div>
+            <div class="p-4 flex flex-col flex-1 gap-3">
+              <h3 class="font-label-md text-label-md text-on-surface truncate">{{ doacao.titulo }}</h3>
+              <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">{{ doacao.descricao }}</p>
+              <div class="w-full mt-2 flex items-center justify-center">
+                <button
+                  type="button"
+                  (click)="solicitarItem(doacao.id_item)"
+                  class="w-full bg-primary text-on-primary font-label-md text-label-md py-2.5 rounded-lg hover:bg-primary/90 transition-colors active:scale-95 shadow-sm flex items-center justify-center gap-2"
+                >
+                  <span class="material-symbols-outlined" style="font-size: 18px;">volunteer_activism</span>
+                  Solicitar
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  }
+</main>

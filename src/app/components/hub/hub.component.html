@@ -1,0 +1,93 @@
+<!-- Main Canvas -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12 flex flex-col gap-8">
+  <!-- Section Header -->
+  <div class="flex justify-between items-end">
+    <div>
+      <h1 class="font-headline-lg text-headline-lg font-bold text-on-surface mb-2">Itens Recentes</h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant">Encontre o que você precisa ou doe o que está sobrando.</p>
+    </div>
+    <!-- Minimalist Sort -->
+    <div class="hidden sm:flex items-center gap-2 text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
+      <span class="font-label-md text-label-md">Mais recentes</span>
+      <span class="material-symbols-outlined text-[20px]">keyboard_arrow_down</span>
+    </div>
+  </div>
+
+  @if (mensagemErro) {
+    <div class="bg-error-container text-on-error-container p-4 rounded-lg text-center">
+      {{ mensagemErro }}
+    </div>
+  }
+
+  @if (isLoading) {
+    <!-- Loading State -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <article class="group bg-surface-container-lowest border border-outline-variant border-dashed rounded-xl overflow-hidden flex flex-col opacity-60">
+          <div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center">
+            <div class="flex flex-col items-center gap-2 text-outline">
+              <span class="material-symbols-outlined text-[48px]">image</span>
+              <span class="font-label-sm text-label-sm">Sem imagem</span>
+            </div>
+          </div>
+          <div class="p-4 flex flex-col flex-1 gap-3">
+            <div class="h-5 w-3/4 bg-surface-variant rounded animate-pulse"></div>
+            <div class="flex items-center gap-1.5 text-on-surface-variant mt-auto">
+              <span class="material-symbols-outlined text-[16px]">location_on</span>
+              <div class="h-3 w-1/2 bg-surface-variant rounded animate-pulse"></div>
+            </div>
+            <div class="w-full mt-2 bg-surface-variant/30 border border-outline-variant h-10 rounded-lg"></div>
+          </div>
+        </article>
+      }
+    </div>
+  } @else {
+    @if (doacoesDisponiveis.length === 0) {
+      <!-- Empty State -->
+      <div class="flex flex-col items-center justify-center py-16 text-center">
+        <span class="material-symbols-outlined text-[64px] text-outline mb-4">inventory_2</span>
+        <h2 class="font-headline-md text-headline-md text-on-surface mb-2">Nenhuma doação disponível</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant">Seja o primeiro a postar uma doação!</p>
+      </div>
+    } @else {
+      <!-- 4-Column Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        @for (doacao of doacoesDisponiveis; track doacao.id_item) {
+          <article class="group bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+            <div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center">
+              <div class="flex flex-col items-center gap-2 text-outline">
+                <span class="material-symbols-outlined text-[48px]">image</span>
+                <span class="font-label-sm text-label-sm">Sem imagem</span>
+              </div>
+              <div class="absolute top-3 left-3 bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-1 rounded-full shadow-sm">
+                Disponível
+              </div>
+            </div>
+            <div class="p-4 flex flex-col flex-1 gap-3">
+              <h3 class="font-label-md text-label-md text-on-surface truncate">{{ doacao.titulo }}</h3>
+              <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">{{ doacao.descricao }}</p>
+              <div class="w-full mt-2 flex items-center justify-center">
+                <button
+                  (click)="solicitarItem(doacao.id_item)"
+                  class="w-full bg-primary text-on-primary font-label-md text-label-md py-2.5 rounded-lg hover:bg-primary/90 transition-colors active:scale-95 shadow-sm flex items-center justify-center gap-2"
+                >
+                  <span class="material-symbols-outlined" style="font-size: 18px;">volunteer_activism</span>
+                  Solicitar
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  }
+</main>
+
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant w-full mt-auto">
+  <div class="flex flex-col md:flex-row justify-between items-center w-full px-4 md:px-6 py-8 max-w-7xl mx-auto gap-4">
+    <span class="font-body-md text-body-md text-on-surface-variant text-center md:text-left">
+      © 2026 DoaLink. Desenvolvido por VICTOR,Miguel ; ANGELO,Nicolas ; PINTO,Stanley ; MORAES,Daniel.
+    </span>
+  </div>
+</footer>

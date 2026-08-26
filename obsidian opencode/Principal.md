@@ -1,0 +1,1 @@
+O projeto consiste no desenvolvimento de um protótipo de plataforma web estruturado aos moldes de um marketplace. O foco exclusivo do sistema é a promoção da economia circular através de doações **totalmente gratuitas**, sem nenhum tipo de transação financeira envolvida.

@@ -1,0 +1,158 @@
+<!-- TopAppBar (original login.html) -->
+<header class="w-full top-0 bg-surface dark:bg-inverse-surface shadow-sm z-50">
+  <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-xs w-full max-w-7xl mx-auto">
+    <div class="flex items-center gap-sm">
+      <span class="font-display-lg text-display-lg font-bold text-primary dark:text-primary-fixed-dim cursor-pointer">DoaLink</span>
+    </div>
+    <div class="hidden md:flex items-center gap-gutter">
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-grow flex flex-col md:flex-row w-full max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-lg gap-lg">
+  <!-- Left Side: Login -->
+  <section class="flex-1 flex flex-col justify-center bg-surface p-sm md:p-lg rounded-xl shadow-[0_2px_8px_rgba(0,97,148,0.04)]">
+    <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-md">Acesse sua conta</h1>
+    <form [formGroup]="formularioLogin" (ngSubmit)="onSubmit()" class="flex flex-col gap-sm">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <span class="material-symbols-outlined text-on-surface-variant">mail</span>
+        </div>
+        <input
+          formControlName="email"
+          class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
+          placeholder="Email"
+          type="email"
+        />
+        <span class="text-error text-sm mt-1 block">{{ obterErroCampo('email') }}</span>
+      </div>
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <span class="material-symbols-outlined text-on-surface-variant">lock</span>
+        </div>
+        <input
+          formControlName="senha"
+          class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
+          placeholder="Senha"
+          type="password"
+        />
+        <span class="text-error text-sm mt-1 block">{{ obterErroCampo('senha') }}</span>
+      </div>
+      <div class="flex justify-end">
+        <a class="font-label-md text-label-md text-primary hover:text-on-primary-fixed-variant transition-colors" href="#">Esqueci minha senha</a>
+      </div>
+
+      @if (mensagemErro) {
+        <span class="text-error text-sm text-center">{{ mensagemErro }}</span>
+      }
+
+      <button class="w-full bg-primary text-on-primary py-3 rounded-lg font-headline-md text-[18px] hover:bg-on-primary-fixed-variant active:scale-95 transition-all shadow-sm mt-xs" type="submit">
+        Entrar
+      </button>
+    </form>
+  </section>
+
+  <!-- Vertical Divider (Visible on Desktop) -->
+  <div class="hidden md:flex w-px bg-outline-variant/30 self-stretch my-md"></div>
+  <!-- Horizontal Divider (Visible on Mobile) -->
+  <div class="flex md:hidden h-px w-full bg-outline-variant/30 my-sm"></div>
+
+  <!-- Right Side: Signup -->
+  <section class="flex-1 flex flex-col justify-center bg-surface-container-low p-sm md:p-lg rounded-xl shadow-[0_2px_8px_rgba(0,97,148,0.04)]">
+    <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-md">Crie uma conta</h2>
+
+    @if (!isLoginMode) {
+      <form [formGroup]="formularioLogin" (ngSubmit)="onSubmit()" class="flex flex-col gap-sm">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="material-symbols-outlined text-on-surface-variant">person</span>
+          </div>
+          <input
+            formControlName="nome"
+            class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
+            placeholder="Nome completo"
+            type="text"
+          />
+          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('nome') }}</span>
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="material-symbols-outlined text-on-surface-variant">mail</span>
+          </div>
+          <input
+            formControlName="email"
+            class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
+            placeholder="Email"
+            type="email"
+          />
+          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('email') }}</span>
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="material-symbols-outlined text-on-surface-variant">lock</span>
+          </div>
+          <input
+            formControlName="senha"
+            class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
+            placeholder="Senha"
+            type="password"
+          />
+          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('senha') }}</span>
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="material-symbols-outlined text-on-surface-variant">lock</span>
+          </div>
+          <input
+            formControlName="confirmarSenha"
+            class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
+            placeholder="Confirmar Senha"
+            type="password"
+          />
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="material-symbols-outlined text-on-surface-variant">location_on</span>
+          </div>
+          <input
+            formControlName="endereco"
+            class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
+            placeholder="Endereço"
+            type="text"
+          />
+          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('endereco') }}</span>
+        </div>
+        <button class="w-full bg-primary text-on-primary py-3 rounded-lg font-headline-md text-[18px] hover:bg-on-primary-fixed-variant active:scale-95 transition-all shadow-sm mt-xs" type="submit">
+          Cadastrar
+        </button>
+      </form>
+    } @else {
+      <div class="flex flex-col items-center justify-center flex-1 text-center text-on-surface-variant py-12">
+        <span class="material-symbols-outlined text-[64px] text-outline mb-4">person_add</span>
+        <p class="text-body-lg">Clique em "Cadastre-se" para criar sua conta.</p>
+        <button (click)="alternarModo()" class="mt-4 text-primary font-semibold hover:underline font-label-md text-label-md">
+          Cadastre-se
+        </button>
+      </div>
+    }
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="w-full bg-surface-container dark:bg-surface-container-highest mt-auto">
+  <div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-lg w-full max-w-7xl mx-auto gap-md md:gap-0">
+    <div class="flex flex-col items-center md:items-start gap-xs">
+      <span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-inverse-on-surface">DoaLink</span>
+      <p class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant opacity-80 hover:opacity-100 transition-opacity">
+        © 2026 DoaLink. Desenvolvido por VICTOR,Miguel ; ANGELO,Nicolas ; PINTO,Stanley ; MORAES,Daniel.
+      </p>
+    </div>
+    <nav class="flex flex-wrap justify-center gap-sm md:gap-md">
+      <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+      <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+      <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Contact Us</a>
+      <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors opacity-80 hover:opacity-100" href="#">About Us</a>
+    </nav>
+  </div>
+</footer>

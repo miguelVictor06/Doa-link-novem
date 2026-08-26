@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DoaLink - Marketplace de Doações</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="index.js"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#93ccff",
+                        "on-secondary-fixed": "#001e2f",
+                        "background": "#f8f9ff",
+                        "secondary-fixed-dim": "#89ceff",
+                        "surface-dim": "#cbdbf5",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#fffbff",
+                        "surface-variant": "#d3e4fe",
+                        "on-primary-container": "#fdfcff",
+                        "inverse-surface": "#213145",
+                        "on-error": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#006194",
+                        "primary-fixed": "#cce5ff",
+                        "secondary-fixed": "#c9e6ff",
+                        "surface-container": "#e5eeff",
+                        "surface": "#f8f9ff",
+                        "on-primary-fixed-variant": "#004b73",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#3f4850",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary-fixed": "#ffdcc0",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#006591",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "primary-container": "#007bb9",
+                        "surface-tint": "#006398",
+                        "on-tertiary-fixed-variant": "#6b3b00",
+                        "tertiary": "#894d00",
+                        "outline-variant": "#bfc7d2",
+                        "on-tertiary-fixed": "#2d1600",
+                        "error-container": "#ffdad6",
+                        "outline": "#707881",
+                        "on-secondary-container": "#004666",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#93ccff",
+                        "on-primary-fixed": "#001d31",
+                        "secondary-container": "#39b8fd",
+                        "tertiary-fixed-dim": "#ffb875",
+                        "surface-container-high": "#dce9ff",
+                        "surface-bright": "#f8f9ff",
+                        "tertiary-container": "#ac6200",
+                        "surface-container-low": "#eff4ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max-width": "1280px",
+                        "margin-desktop": "24px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "headline-lg-mobile": ["Inter", "sans-serif"],
+                        "headline-lg": ["Inter", "sans-serif"],
+                        "label-sm": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-lg": ["30px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background min-h-screen flex flex-col font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 bg-surface border-b border-outline-variant w-full transition-shadow duration-200" id="main-header">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max-width mx-auto">
+<!-- Brand & Logo -->
+<div class="flex items-center gap-3">
+<img alt="DoaLink Logo" class="h-10 w-10 rounded-sm object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSYaU0taXOIPI4FTijF4GCsuHCZ0a2BHqIkpL8W-XgBPmotvJg4DwkllPKhU50rce3rGCDjnK1HP6qycIqneI3YuwFa6KSxC_JIL-WnfABmtWK4Z2rxJx4cfYqi1dJSNAx_9_B8KWnK07z7ENSf3n_j0uuq7Fc51zjQxlhAMRvsqZnYZi9v_kxQ5rNxIR__41pIxti6yovMeoe_8LYIpZshdECfEi3jgdDcNGnP9m2cf2xnoKNe7YjNh9EW7apZ7Zvz7elJesRhNk"/>
+<span class="font-headline-lg text-headline-lg font-bold text-primary hidden md:block">DoaLink</span>
+</div>
+<!-- Central Search Bar -->
+<div class="flex-1 max-w-md mx-8 hidden md:block">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-full py-2 pl-10 pr-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-outline" placeholder="Buscar itens, categorias ou locais..." type="text"/>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-primary border-b-2 border-primary pb-1 font-label-md text-label-md hover:opacity-80 transition-opacity" href="#">Marketplace</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="sobre.html">Compreenda o nosso site</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4 ml-auto lg:ml-8">
+<button aria-label="notifications" class="text-on-surface-variant hover:text-primary transition-colors duration-200" data-icon="notifications">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+
+
+    <button aria-label="account_circle" class="text-on-surface-variant hover:text-primary transition-colors duration-200" data-icon="account_circle">
+<a href="perfil.html">
+<span class="material-symbols-outlined">account_circle</span>
+</a>
+</button>
+
+<a href="posts.html" class="hidden md:flex bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors shadow-sm items-center gap-2"><span class="material-symbols-outlined" style="font-size: 18px;" >add_box</span>Postar uma doação</a>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 w-full max-w-container-max-width mx-auto px-margin-desktop py-8 md:py-12 flex flex-col gap-8">
+<!-- Section Header -->
+<div class="flex justify-between items-end">
+<div>
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface mb-2">Itens Recentes</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Encontre o que você precisa ou doe o que está sobrando.</p>
+</div>
+<!-- Minimalist Sort (Replacing horizontal filters) -->
+<div class="hidden sm:flex items-center gap-2 text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
+<span class="font-label-md text-label-md">Mais recentes</span>
+<span class="material-symbols-outlined text-[20px]">keyboard_arrow_down</span>
+</div>
+</div>
+<!-- 4-Column Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter"><!-- Placeholder Card 1 -->
+<article class="group bg-surface-container-lowest border border-outline-variant border-dashed rounded-xl overflow-hidden flex flex-col opacity-60">
+<div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center">
+<div class="flex flex-col items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-[48px]">image</span>
+<span class="font-label-sm text-label-sm">Sem imagem</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1 gap-3">
+<div class="h-5 w-3/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="flex items-center gap-1.5 text-on-surface-variant mt-auto">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<div class="h-3 w-1/2 bg-surface-variant rounded animate-pulse"></div>
+</div>
+<div class="w-full mt-2 bg-surface-variant/30 border border-outline-variant h-10 rounded-lg"></div>
+</div>
+</article>
+<!-- Placeholder Card 2 -->
+<article class="group bg-surface-container-lowest border border-outline-variant border-dashed rounded-xl overflow-hidden flex flex-col opacity-60">
+<div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center">
+<div class="flex flex-col items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-[48px]">image</span>
+<span class="font-label-sm text-label-sm">Sem imagem</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1 gap-3">
+<div class="h-5 w-3/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="flex items-center gap-1.5 text-on-surface-variant mt-auto">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<div class="h-3 w-1/2 bg-surface-variant rounded animate-pulse"></div>
+</div>
+<div class="w-full mt-2 bg-surface-variant/30 border border-outline-variant h-10 rounded-lg"></div>
+</div>
+</article>
+<!-- Placeholder Card 3 -->
+<article class="group bg-surface-container-lowest border border-outline-variant border-dashed rounded-xl overflow-hidden flex flex-col opacity-60">
+<div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center">
+<div class="flex flex-col items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-[48px]">image</span>
+<span class="font-label-sm text-label-sm">Sem imagem</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1 gap-3">
+<div class="h-5 w-3/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="flex items-center gap-1.5 text-on-surface-variant mt-auto">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<div class="h-3 w-1/2 bg-surface-variant rounded animate-pulse"></div>
+</div>
+<div class="w-full mt-2 bg-surface-variant/30 border border-outline-variant h-10 rounded-lg"></div>
+</div>
+</article>
+<!-- Placeholder Card 4 -->
+<article class="group bg-surface-container-lowest border border-outline-variant border-dashed rounded-xl overflow-hidden flex flex-col opacity-60">
+<div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center">
+<div class="flex flex-col items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-[48px]">image</span>
+<span class="font-label-sm text-label-sm">Sem imagem</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1 gap-3">
+<div class="h-5 w-3/4 bg-surface-variant rounded animate-pulse"></div>
+<div class="flex items-center gap-1.5 text-on-surface-variant mt-auto">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<div class="h-3 w-1/2 bg-surface-variant rounded animate-pulse"></div>
+</div>
+<div class="w-full mt-2 bg-surface-variant/30 border border-outline-variant h-10 rounded-lg"></div>
+</div>
+</article></div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant w-full mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-desktop py-8 max-w-container-max-width mx-auto gap-gutter">
+<span class="font-body-md text-body-md text-on-surface-variant text-center md:text-left">
+                © 2026 DoaLink. Desenvolvido por VICTOR,Miguel ; ANGELO,Nicolas ; PINTO,Stanley ; MORAES,Daniel.
+            </span>
+
+</div>
+</footer>
+
+</body></html>

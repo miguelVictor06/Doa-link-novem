@@ -1,0 +1,163 @@
+<main class="flex-grow flex items-center justify-center py-16 px-4 md:px-margin-desktop bg-surface-container-low">
+  <div class="w-full max-w-[720px] bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden my-8 mx-auto">
+    <!-- Header Section -->
+    <div class="px-10 pt-10 pb-6">
+      <h1 class="font-headline-lg text-headline-lg text-on-surface">Postar uma Doação</h1>
+      <p class="font-body-md text-body-md text-on-surface-variant mt-3">Compartilhe o que você não usa mais com quem precisa. Pequenos gestos mudam o dia de alguém.</p>
+    </div>
+
+    @if (mensagemErro) {
+      <div class="mx-10 mb-4 bg-error-container text-on-error-container p-4 rounded-lg text-center">
+        {{ mensagemErro }}
+      </div>
+    }
+
+    <form [formGroup]="formularioDoacao" (ngSubmit)="onSubmit()" class="px-10 pb-10 space-y-8">
+      <!-- Image Upload Area -->
+      <div class="space-y-2">
+        <label class="font-label-md text-label-md text-on-surface-variant">Foto do Produto</label>
+        <div
+          class="group relative flex flex-col items-center justify-center w-full h-56 border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer overflow-hidden"
+          (drop)="onDrop($event)"
+          (dragover)="onDragOver($event)"
+          (click)="fileInput.click()"
+        >
+          @if (previewFoto) {
+            <img [src]="previewFoto" class="w-full h-full object-cover" alt="Preview"/>
+          } @else {
+            <div class="flex flex-col items-center justify-center py-5 pb-6">
+              <span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-5xl mb-3">add_a_photo</span>
+              <p class="font-label-md text-label-md text-on-surface-variant group-hover:text-on-surface">Clique para adicionar uma imagem</p>
+              <p class="text-[12px] text-outline mt-1 uppercase tracking-wider">JPEG, PNG até 5MB</p>
+            </div>
+          }
+          <input
+            #fileInput
+            (change)="onFileSelected($event)"
+            accept="image/*"
+            class="hidden"
+            type="file"
+          />
+        </div>
+      </div>
+
+      <!-- Item Name -->
+      <div class="space-y-1.5">
+        <label class="font-label-md text-label-md text-on-surface-variant" for="itemName">O que você está doando?</label>
+        <div class="relative group">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">inventory</span>
+          </div>
+          <input
+            formControlName="itemName"
+            class="block w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            id="itemName"
+            placeholder="Ex: Tênis Esportivo Tam 40"
+            type="text"
+          />
+          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('itemName') }}</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Product Condition -->
+        <div class="space-y-1.5">
+          <label class="font-label-md text-label-md text-on-surface-variant" for="condition">Condição do Produto</label>
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">conditions</span>
+            </div>
+            <select
+              formControlName="condition"
+              class="block w-full pl-12 pr-10 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              id="condition"
+            >
+              <option disabled selected value="">Selecione o estado</option>
+              <option value="factorynew">Novo de fábrica</option>
+              <option value="novo">Novo</option>
+              <option value="bom">Pouco Usado - Em boas condições</option>
+              <option value="marcas">Usado - Com marcas de uso</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline">expand_more</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Number -->
+        <div class="space-y-1.5">
+          <label class="font-label-md text-label-md text-on-surface-variant" for="phone">Telefone de Contato</label>
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">phone</span>
+            </div>
+            <input
+              formControlName="phone"
+              class="block w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              id="phone"
+              placeholder="(00) 00000-0000"
+              type="tel"
+            />
+            <span class="text-error text-sm mt-1 block">{{ obterErroCampo('phone') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Description -->
+      <div class="space-y-1.5">
+        <label class="font-label-md text-label-md text-on-surface-variant" for="description">Descrição Detalhada</label>
+        <div class="relative group">
+          <div class="absolute top-3.5 left-4 flex items-start pointer-events-none">
+            <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">description</span>
+          </div>
+          <textarea
+            formControlName="description"
+            class="block w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+            id="description"
+            placeholder="Conte um pouco mais sobre o item, motivo da doação ou local de retirada..."
+            rows="4"
+          ></textarea>
+          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('description') }}</span>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="flex flex-row items-center justify-end gap-4 pt-6 border-t border-outline-variant">
+        <button
+          routerLink="/hub"
+          class="px-8 py-3.5 font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-full transition-all active:scale-95"
+          type="button"
+        >
+          Cancelar
+        </button>
+        <button
+          [disabled]="isSubmitting"
+          class="px-10 py-3.5 bg-primary text-on-primary font-label-md text-label-md rounded-full shadow-md hover:bg-primary-container hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+          type="submit"
+        >
+          @if (isSubmitting) {
+            <span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span>
+            Publicando...
+          } @else {
+            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">send</span>
+            Publicar Doação
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="w-full mt-auto bg-surface-container-low border-t border-outline-variant">
+  <div class="flex flex-col md:flex-row justify-between items-center px-margin-desktop py-8 gap-gutter max-w-container-max-width mx-auto">
+    <div class="flex flex-col gap-2">
+      <span class="font-headline-md text-headline-md text-primary">DoaLink</span>
+      <p class="font-body-md text-body-md text-on-surface-variant max-w-xs text-center md:text-left">
+        © 2026 DoaLink. Desenvolvido por VICTOR;Miguel, ANGELO;Nycolas, PINTO; & MORAES;Daniel.
+      </p>
+    </div>
+    <div class="flex flex-wrap justify-center gap-6">
+    </div>
+  </div>
+</footer>

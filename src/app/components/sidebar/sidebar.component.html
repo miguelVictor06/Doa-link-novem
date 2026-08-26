@@ -1,0 +1,145 @@
+@if (visivel()) {
+  <!-- Barra superior (somente celular) -->
+  <header class="lg:hidden sticky top-0 z-[60] flex h-14 shrink-0 items-center gap-3 bg-surface-container-lowest border-b border-outline-variant px-4">
+    <button
+      type="button"
+      (click)="abrirMenu()"
+      aria-label="Abrir menu"
+      class="flex p-2 -ml-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-colors active:scale-95"
+    >
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    <a routerLink="/hub" class="flex items-center gap-2" aria-label="Ir para as doações">
+      <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+      <span class="font-headline-md text-headline-md font-bold text-primary">DoaLink</span>
+    </a>
+  </header>
+
+  <!-- Fundo escurecido atrás da gaveta (somente celular) -->
+  @if (menuAberto()) {
+    <div class="lg:hidden fixed inset-0 z-[70] bg-inverse-surface/50" (click)="fecharMenu()" aria-hidden="true"></div>
+  }
+
+  <!-- Gaveta de navegação (somente celular) -->
+  <aside
+    class="lg:hidden fixed inset-y-0 left-0 z-[80] flex w-72 max-w-[85vw] flex-col bg-surface-container-lowest shadow-xl transition-transform duration-200"
+    [class.-translate-x-full]="!menuAberto()"
+    [attr.aria-hidden]="!menuAberto()"
+    aria-label="Menu de navegação"
+  >
+    <ng-container [ngTemplateOutlet]="conteudoNavegacao" [ngTemplateOutletContext]="{ emGaveta: true }" />
+  </aside>
+
+  <!-- Painel lateral fixo (somente computador): recolhido por padrão, expande como camada sobre o conteúdo -->
+  <aside
+    class="hidden lg:flex fixed inset-y-0 left-0 z-[55] flex-col bg-surface-container-lowest border-r border-outline-variant overflow-y-auto overflow-x-hidden transition-[width] duration-300 ease-out"
+    [class.w-72]="expandido()"
+    [class.w-20]="!expandido()"
+    [class.shadow-xl]="expandido()"
+    (mouseenter)="expandirSidebar()"
+    (mouseleave)="recolherSidebar()"
+    aria-label="Menu de navegação"
+  >
+    <ng-container [ngTemplateOutlet]="conteudoNavegacao" [ngTemplateOutletContext]="{ emGaveta: false }" />
+  </aside>
+}
+
+<!-- Conteúdo compartilhado entre o painel do computador e a gaveta do celular -->
+<ng-template #conteudoNavegacao let-emGaveta="emGaveta">
+  <!-- Marca -->
+  <div
+    class="flex h-16 shrink-0 items-center border-b border-outline-variant/60 px-4"
+    [class.justify-between]="emGaveta"
+  >
+    <a
+      routerLink="/hub"
+      class="flex items-center gap-2 pl-3 overflow-hidden"
+      aria-label="Ir para as doações"
+    >
+      <span class="material-symbols-outlined shrink-0 text-primary" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+      <span
+        class="font-headline-lg text-headline-lg font-bold text-primary whitespace-nowrap overflow-hidden transition-all duration-300 ease-out"
+        [class.max-w-0]="!emGaveta && !expandido()"
+        [class.opacity-0]="!emGaveta && !expandido()"
+        [class.max-w-40]="emGaveta || expandido()"
+        [class.opacity-100]="emGaveta || expandido()"
+      >DoaLink</span>
+    </a>
+    @if (emGaveta) {
+      <button
+        type="button"
+        (click)="fecharMenu()"
+        aria-label="Fechar menu"
+        class="flex lg:hidden p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-colors active:scale-95"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    }
+  </div>
+
+  <!-- Navegação principal -->
+  <nav class="flex flex-col gap-1 p-3" aria-label="Navegação principal">
+    @if (emGaveta) {
+      <span class="px-3 pb-1 font-label-sm text-label-sm uppercase tracking-wide text-outline overflow-hidden whitespace-nowrap">Navegação</span>
+    }
+    @for (item of itensNavegacao; track item.rota) {
+      <a
+        [routerLink]="item.rota"
+        routerLinkActive="bg-secondary-container text-on-secondary-container font-semibold shadow-sm"
+        [routerLinkActiveOptions]="{ exact: item.exata }"
+        [title]="item.rotulo"
+        class="relative flex items-center gap-3 rounded-lg px-4 py-2.5 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-colors duration-300 ease-out"
+      >
+        <span class="material-symbols-outlined shrink-0">{{ item.icone }}</span>
+        <span
+          class="whitespace-nowrap overflow-hidden transition-all duration-300 ease-out"
+          [class.max-w-0]="!emGaveta && !expandido()"
+          [class.opacity-0]="!emGaveta && !expandido()"
+          [class.max-w-40]="emGaveta || expandido()"
+          [class.opacity-100]="emGaveta || expandido()"
+        >{{ item.rotulo }}</span>
+        @if (item.rota === '/mensagens' && naoLidas() > 0) {
+          <span
+            class="absolute right-1.5 top-1/2 -translate-y-1/2 flex h-5 min-w-5 items-center justify-center rounded-full bg-error px-1 font-label-sm text-[11px] leading-none text-on-error shadow-sm"
+          >{{ naoLidas() }}</span>
+        }
+      </a>
+    }
+  </nav>
+
+  <!-- Rodapé com dados do usuário -->
+  <div class="mt-auto flex flex-col gap-2 border-t border-outline-variant/60 p-3">
+    <div
+      class="flex items-center gap-3 px-4 py-1 overflow-hidden"
+    >
+      <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-container-low border border-outline-variant">
+        <span class="material-symbols-outlined text-on-surface-variant">person</span>
+      </div>
+      <div
+        class="flex min-w-0 flex-col transition-all duration-300 ease-out"
+        [class.max-w-0]="!emGaveta && !expandido()"
+        [class.opacity-0]="!emGaveta && !expandido()"
+        [class.max-w-40]="emGaveta || expandido()"
+        [class.opacity-100]="emGaveta || expandido()"
+      >
+        <span class="font-label-md text-label-md text-on-surface truncate">{{ authService.obterUsuarioLogado()?.nome ?? 'Usuário' }}</span>
+        <span class="font-label-sm text-label-sm text-on-surface-variant truncate">{{ authService.obterUsuarioLogado()?.email }}</span>
+      </div>
+    </div>
+    <button
+      type="button"
+      (click)="authService.logout()"
+      title="Sair"
+      class="flex items-center gap-3 rounded-lg px-4 py-2.5 font-label-md text-label-md text-on-surface-variant hover:bg-error-container hover:text-error transition-colors duration-300 ease-out"
+    >
+      <span class="material-symbols-outlined shrink-0">logout</span>
+      <span
+        class="whitespace-nowrap overflow-hidden transition-all duration-300 ease-out"
+        [class.max-w-0]="!emGaveta && !expandido()"
+        [class.opacity-0]="!emGaveta && !expandido()"
+        [class.max-w-40]="emGaveta || expandido()"
+        [class.opacity-100]="emGaveta || expandido()"
+      >Sair</span>
+    </button>
+  </div>
+</ng-template>

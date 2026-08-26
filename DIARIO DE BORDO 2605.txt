@@ -1,0 +1,5 @@
+DIARIO DE BORDO 26/05
+
+Hoje, eu(Miguel) dei inicio ao site do nosso projeto criando uma interface. A pagina principal esta feita e pronta para receber os anúncios dos usuários, e também a pagina de termos de uso está pronta , o texto esta bem formatado e de fácil compreensão.
+O próximo passo que viso dar é: 
+Criar a pagina para criar o post de doação.
