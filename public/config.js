@@ -1,3 +1,3 @@
 window.__DOALINK_CONFIG__ = {
-  "apiUrl": "http://localhost:8080/api"
+  apiUrl: "https://doalink-backend-7q4s.onrender.com/api"
 };
