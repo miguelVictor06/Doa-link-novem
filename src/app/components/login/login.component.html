@@ -1,158 +1,321 @@
-<!-- TopAppBar (original login.html) -->
-<header class="w-full top-0 bg-surface dark:bg-inverse-surface shadow-sm z-50">
-  <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-xs w-full max-w-7xl mx-auto">
-    <div class="flex items-center gap-sm">
-      <span class="font-display-lg text-display-lg font-bold text-primary dark:text-primary-fixed-dim cursor-pointer">DoaLink</span>
-    </div>
-    <div class="hidden md:flex items-center gap-gutter">
-    </div>
+<!-- Minimal Editorial Navigation -->
+<header class="w-full bg-[#fbfcfd]/90 backdrop-blur-md border-b border-border-subtle sticky top-0 z-40 transition-colors">
+  <div class="flex justify-between items-center px-6 sm:px-10 md:px-12 py-3.5 w-full max-w-7xl mx-auto">
+    <a class="flex items-center gap-2.5 group" href="#">
+      <div class="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-white shadow-xs">
+        <span class="material-symbols-outlined text-[17px]">volunteer_activism</span>
+      </div>
+      <span class="font-semibold text-[17px] tracking-[-0.02em] text-slate-900 group-hover:text-primary transition-colors">DoaLink</span>
+    </a>
+    <nav class="flex items-center gap-6 text-[13px] text-text-muted font-normal tracking-[-0.01em]">
+      <a class="hover:text-slate-900 transition-colors" href="#">Como doar</a>
+      <a class="hover:text-slate-900 transition-colors" href="#">Instituições</a>
+      <a class="hover:text-slate-900 transition-colors text-primary font-medium" href="#">Ajuda</a>
+    </nav>
   </div>
 </header>
 
-<!-- Main Content -->
-<main class="flex-grow flex flex-col md:flex-row w-full max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-lg gap-lg">
-  <!-- Left Side: Login -->
-  <section class="flex-1 flex flex-col justify-center bg-surface p-sm md:p-lg rounded-xl shadow-[0_2px_8px_rgba(0,97,148,0.04)]">
-    <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-md">Acesse sua conta</h1>
-    <form [formGroup]="formularioLogin" (ngSubmit)="onSubmit()" class="flex flex-col gap-sm">
-      <div class="relative">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <span class="material-symbols-outlined text-on-surface-variant">mail</span>
-        </div>
-        <input
-          formControlName="email"
-          class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
-          placeholder="Email"
-          type="email"
-        />
-        <span class="text-error text-sm mt-1 block">{{ obterErroCampo('email') }}</span>
-      </div>
-      <div class="relative">
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <span class="material-symbols-outlined text-on-surface-variant">lock</span>
-        </div>
-        <input
-          formControlName="senha"
-          class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
-          placeholder="Senha"
-          type="password"
-        />
-        <span class="text-error text-sm mt-1 block">{{ obterErroCampo('senha') }}</span>
-      </div>
-      <div class="flex justify-end">
-        <a class="font-label-md text-label-md text-primary hover:text-on-primary-fixed-variant transition-colors" href="#">Esqueci minha senha</a>
-      </div>
+<!-- Editorial Sub-header -->
+<div class="w-full max-w-7xl mx-auto px-6 sm:px-10 md:px-12 pt-10 sm:pt-12 pb-2">
+  <div class="max-w-2xl">
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary-subtle text-primary text-xs font-medium mb-3.5 tracking-tight">
+      <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+      <span>Plataforma Unificada</span>
+    </div>
+    <h1 class="text-2xl sm:text-[32px] font-semibold tracking-[-0.03em] text-slate-900 leading-snug">
+      Conectando solidariedade e transformação
+    </h1>
+    <p class="text-sm text-text-muted mt-2 leading-relaxed tracking-[-0.01em]">
+      Acesse sua conta para acompanhar doações em andamento ou crie seu perfil para participar da rede comunitária.
+    </p>
+  </div>
+</div>
 
+<!-- Main Content Dual-Column Split -->
+<main class="flex-grow flex flex-col lg:flex-row w-full max-w-7xl mx-auto px-6 sm:px-10 md:px-12 py-6 gap-8 lg:gap-10 items-start">
+  <!-- Left Column: Login -->
+  <section class="w-full lg:w-[40%] bg-surface p-7 sm:p-8 rounded-2xl border border-border shadow-[0_1px_3px_0_rgba(15,23,42,0.03)] flex flex-col transition-all">
+    <div class="mb-6 pb-4 border-b border-border-subtle">
+      <h2 class="text-lg font-semibold text-slate-900 tracking-[-0.02em]">Acesse sua conta</h2>
+      <p class="text-xs text-text-muted mt-0.5 tracking-tight">Informe suas credenciais registradas</p>
+    </div>
+    <form [formGroup]="formularioLogin" (ngSubmit)="onSubmitLogin()" class="flex flex-col gap-4">
+      <!-- Campo Email -->
+      <div>
+        <label class="block text-xs font-medium text-slate-700 mb-1.5 tracking-tight">Email de acesso</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-subtle">
+            <span class="material-symbols-outlined text-[18px]">mail</span>
+          </div>
+          <input
+            class="w-full pl-9 pr-3.5 py-2.5 rounded-lg bg-surface border border-border text-slate-900 text-sm placeholder:text-text-subtle focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all"
+            formControlName="email"
+            placeholder="exemplo@email.com"
+            type="email"
+          />
+        </div>
+        @if (formularioLogin.get('email')?.errors && formularioLogin.get('email')?.touched) {
+          <span class="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-normal">
+            <span class="material-symbols-outlined text-[14px]">info</span>
+            {{ obterErroCampoLogin('email') }}
+          </span>
+        }
+      </div>
+      <!-- Campo Senha -->
+      <div>
+        <div class="flex justify-between items-center mb-1.5">
+          <label class="block text-xs font-medium text-slate-700 tracking-tight">Sua senha</label>
+          <a class="text-xs font-medium text-primary hover:underline transition-colors" href="#">Esqueci minha senha</a>
+        </div>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-subtle">
+            <span class="material-symbols-outlined text-[18px]">lock</span>
+          </div>
+          <input
+            class="w-full pl-9 pr-3.5 py-2.5 rounded-lg bg-surface border border-border text-slate-900 text-sm placeholder:text-text-subtle focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all"
+            formControlName="senha"
+            placeholder="••••••••"
+            type="password"
+          />
+        </div>
+        @if (formularioLogin.get('senha')?.errors && formularioLogin.get('senha')?.touched) {
+          <span class="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-normal">
+            <span class="material-symbols-outlined text-[14px]">info</span>
+            {{ obterErroCampoLogin('senha') }}
+          </span>
+        }
+      </div>
+      <!-- Mensagem de Erro Geral -->
       @if (mensagemErro) {
-        <span class="text-error text-sm text-center">{{ mensagemErro }}</span>
+        <div class="bg-red-50 border border-red-200 text-red-700 px-3.5 py-2.5 rounded-lg text-xs flex items-center gap-2">
+          <span class="material-symbols-outlined text-[16px]">error</span>
+          <span>{{ mensagemErro }}</span>
+        </div>
       }
-
-      <button class="w-full bg-primary text-on-primary py-3 rounded-lg font-headline-md text-[18px] hover:bg-on-primary-fixed-variant active:scale-95 transition-all shadow-sm mt-xs" type="submit">
-        Entrar
+      <!-- Botão Entrar -->
+      <button class="w-full bg-primary hover:bg-primary-hover active:bg-[#002f4a] text-white py-2.5 rounded-lg font-medium text-sm transition-all shadow-xs hover:shadow flex items-center justify-center gap-2 mt-2" type="submit">
+        <span>Entrar no DoaLink</span>
+        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
       </button>
+      <div class="flex items-center justify-center gap-1.5 pt-2 text-[11px] text-text-subtle">
+        <span class="material-symbols-outlined text-[13px]">verified_user</span>
+        <span>Acesso protegido por autenticação segura</span>
+      </div>
     </form>
   </section>
 
-  <!-- Vertical Divider (Visible on Desktop) -->
-  <div class="hidden md:flex w-px bg-outline-variant/30 self-stretch my-md"></div>
-  <!-- Horizontal Divider (Visible on Mobile) -->
-  <div class="flex md:hidden h-px w-full bg-outline-variant/30 my-sm"></div>
-
-  <!-- Right Side: Signup -->
-  <section class="flex-1 flex flex-col justify-center bg-surface-container-low p-sm md:p-lg rounded-xl shadow-[0_2px_8px_rgba(0,97,148,0.04)]">
-    <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-md">Crie uma conta</h2>
-
-    @if (!isLoginMode) {
-      <form [formGroup]="formularioLogin" (ngSubmit)="onSubmit()" class="flex flex-col gap-sm">
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span class="material-symbols-outlined text-on-surface-variant">person</span>
-          </div>
-          <input
-            formControlName="nome"
-            class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
-            placeholder="Nome completo"
-            type="text"
-          />
-          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('nome') }}</span>
+  <!-- Right Column: Signup -->
+  <section class="w-full lg:w-[60%] bg-surface p-7 sm:p-8 rounded-2xl border border-border shadow-[0_1px_3px_0_rgba(15,23,42,0.03)] flex flex-col transition-all">
+    <div class="mb-6 pb-4 border-b border-border-subtle">
+      <h2 class="text-lg font-semibold text-slate-900 tracking-[-0.02em]">Crie sua conta</h2>
+      <p class="text-xs text-text-muted mt-0.5 tracking-tight">Participe como voluntário individual ou entidade cadastrada</p>
+    </div>
+    <form [formGroup]="formularioCadastro" (ngSubmit)="onSubmitCadastro()" class="flex flex-col gap-4">
+      <!-- Segmented Account Type Selector -->
+      <div>
+        <label class="block text-xs font-medium text-slate-700 mb-1.5 tracking-tight">Tipo de perfil</label>
+        <div class="grid grid-cols-2 p-1 bg-surface-muted rounded-lg border border-border gap-1">
+          <label class="relative flex items-center justify-center gap-2 py-2 px-3 rounded-md cursor-pointer transition-all has-[:checked]:bg-white has-[:checked]:text-primary has-[:checked]:shadow-xs text-slate-600 font-medium text-xs">
+            <input formControlName="tipoConta" type="radio" value="Pessoal" class="sr-only" />
+            <span class="material-symbols-outlined text-[17px]">person</span>
+            <span>Pessoa física</span>
+          </label>
+          <label class="relative flex items-center justify-center gap-2 py-2 px-3 rounded-md cursor-pointer transition-all has-[:checked]:bg-white has-[:checked]:text-primary has-[:checked]:shadow-xs text-slate-600 font-medium text-xs">
+            <input formControlName="tipoConta" type="radio" value="Instituicao" class="sr-only" />
+            <span class="material-symbols-outlined text-[17px]">domain</span>
+            <span>Instituição / ONG</span>
+          </label>
         </div>
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span class="material-symbols-outlined text-on-surface-variant">mail</span>
-          </div>
-          <input
-            formControlName="email"
-            class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
-            placeholder="Email"
-            type="email"
-          />
-          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('email') }}</span>
-        </div>
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span class="material-symbols-outlined text-on-surface-variant">lock</span>
-          </div>
-          <input
-            formControlName="senha"
-            class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
-            placeholder="Senha"
-            type="password"
-          />
-          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('senha') }}</span>
-        </div>
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span class="material-symbols-outlined text-on-surface-variant">lock</span>
-          </div>
-          <input
-            formControlName="confirmarSenha"
-            class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
-            placeholder="Confirmar Senha"
-            type="password"
-          />
-        </div>
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span class="material-symbols-outlined text-on-surface-variant">location_on</span>
-          </div>
-          <input
-            formControlName="endereco"
-            class="w-full pl-10 pr-3 py-3 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface transition-shadow"
-            placeholder="Endereço"
-            type="text"
-          />
-          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('endereco') }}</span>
-        </div>
-        <button class="w-full bg-primary text-on-primary py-3 rounded-lg font-headline-md text-[18px] hover:bg-on-primary-fixed-variant active:scale-95 transition-all shadow-sm mt-xs" type="submit">
-          Cadastrar
-        </button>
-      </form>
-    } @else {
-      <div class="flex flex-col items-center justify-center flex-1 text-center text-on-surface-variant py-12">
-        <span class="material-symbols-outlined text-[64px] text-outline mb-4">person_add</span>
-        <p class="text-body-lg">Clique em "Cadastre-se" para criar sua conta.</p>
-        <button (click)="alternarModo()" class="mt-4 text-primary font-semibold hover:underline font-label-md text-label-md">
-          Cadastre-se
-        </button>
       </div>
-    }
+
+      <!-- CPF / CNPJ Condicional -->
+      @if (formularioCadastro.get('tipoConta')?.value === 'Instituicao') {
+        <div>
+          <label class="block text-xs font-medium text-slate-700 mb-1.5 tracking-tight">CNPJ da Instituição</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-subtle">
+              <span class="material-symbols-outlined text-[18px]">domain</span>
+            </div>
+            <input
+              class="w-full pl-9 pr-3.5 py-2.5 rounded-lg bg-surface border border-border text-slate-900 text-sm placeholder:text-text-subtle focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all"
+              formControlName="cnpj"
+              maxlength="14"
+              placeholder="CNPJ (somente 14 dígitos)"
+              type="text"
+            />
+          </div>
+          @if (formularioCadastro.get('cnpj')?.errors && formularioCadastro.get('cnpj')?.touched) {
+            <span class="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-normal">
+              <span class="material-symbols-outlined text-[14px]">info</span>
+              {{ obterErroCampoCadastro('cnpj') }}
+            </span>
+          }
+        </div>
+      } @else {
+        <div>
+          <label class="block text-xs font-medium text-slate-700 mb-1.5 tracking-tight">CPF</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-subtle">
+              <span class="material-symbols-outlined text-[18px]">badge</span>
+            </div>
+            <input
+              class="w-full pl-9 pr-3.5 py-2.5 rounded-lg bg-surface border border-border text-slate-900 text-sm placeholder:text-text-subtle focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all"
+              formControlName="cpf"
+              maxlength="11"
+              placeholder="CPF (somente 11 dígitos)"
+              type="text"
+            />
+          </div>
+          @if (formularioCadastro.get('cpf')?.errors && (formularioCadastro.get('cpf')?.touched || formularioCadastro.get('cpf')?.dirty)) {
+            <span class="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-normal">
+              <span class="material-symbols-outlined text-[14px]">info</span>
+              {{ obterErroCampoCadastro('cpf') }}
+            </span>
+          }
+        </div>
+      }
+
+      <!-- Linha Nome & Email -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-700 mb-1.5 tracking-tight">Nome completo</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-subtle">
+              <span class="material-symbols-outlined text-[18px]">badge</span>
+            </div>
+            <input
+              class="w-full pl-9 pr-3.5 py-2.5 rounded-lg bg-surface border border-border text-slate-900 text-sm placeholder:text-text-subtle focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all"
+              formControlName="nome"
+              placeholder="Seu nome ou razão social"
+              type="text"
+            />
+          </div>
+          @if (formularioCadastro.get('nome')?.errors && formularioCadastro.get('nome')?.touched) {
+            <span class="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-normal">
+              <span class="material-symbols-outlined text-[14px]">info</span>
+              {{ obterErroCampoCadastro('nome') }}
+            </span>
+          }
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-700 mb-1.5 tracking-tight">Email principal</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-subtle">
+              <span class="material-symbols-outlined text-[18px]">mail</span>
+            </div>
+            <input
+              class="w-full pl-9 pr-3.5 py-2.5 rounded-lg bg-surface border border-border text-slate-900 text-sm placeholder:text-text-subtle focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all"
+              formControlName="email"
+              placeholder="seuemail@exemplo.com"
+              type="email"
+            />
+          </div>
+          @if (formularioCadastro.get('email')?.errors && formularioCadastro.get('email')?.touched) {
+            <span class="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-normal">
+              <span class="material-symbols-outlined text-[14px]">info</span>
+              {{ obterErroCampoCadastro('email') }}
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Linha Senha & Confirmar Senha -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-700 mb-1.5 tracking-tight">Criar senha</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-subtle">
+              <span class="material-symbols-outlined text-[18px]">lock</span>
+            </div>
+            <input
+              class="w-full pl-9 pr-3.5 py-2.5 rounded-lg bg-surface border border-border text-slate-900 text-sm placeholder:text-text-subtle focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all"
+              formControlName="senha"
+              placeholder="No mínimo 6 caracteres"
+              type="password"
+            />
+          </div>
+          @if (formularioCadastro.get('senha')?.errors && formularioCadastro.get('senha')?.touched) {
+            <span class="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-normal">
+              <span class="material-symbols-outlined text-[14px]">info</span>
+              {{ obterErroCampoCadastro('senha') }}
+            </span>
+          }
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-700 mb-1.5 tracking-tight">Confirmar senha</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-subtle">
+              <span class="material-symbols-outlined text-[18px]">lock_reset</span>
+            </div>
+            <input
+              class="w-full pl-9 pr-3.5 py-2.5 rounded-lg bg-surface border border-border text-slate-900 text-sm placeholder:text-text-subtle focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all"
+              formControlName="confirmarSenha"
+              placeholder="Repita sua senha"
+              type="password"
+            />
+          </div>
+          @if (formularioCadastro.get('confirmarSenha')?.errors && formularioCadastro.get('confirmarSenha')?.touched) {
+            <span class="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-normal">
+              <span class="material-symbols-outlined text-[14px]">info</span>
+              {{ obterErroCampoCadastro('confirmarSenha') }}
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Endereço / Cidade -->
+      <div>
+        <label class="block text-xs font-medium text-slate-700 mb-1.5 tracking-tight">Localização (Cidade / UF ou Endereço)</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-subtle">
+            <span class="material-symbols-outlined text-[18px]">location_on</span>
+          </div>
+          <input
+            class="w-full pl-9 pr-3.5 py-2.5 rounded-lg bg-surface border border-border text-slate-900 text-sm placeholder:text-text-subtle focus:border-primary focus:ring-2 focus:ring-primary/15 outline-none transition-all"
+            formControlName="endereco"
+            placeholder="Ex: Belo Horizonte, MG"
+            type="text"
+          />
+        </div>
+        @if (formularioCadastro.get('endereco')?.errors && formularioCadastro.get('endereco')?.touched) {
+          <span class="text-red-600 text-xs mt-1.5 flex items-center gap-1 font-normal">
+            <span class="material-symbols-outlined text-[14px]">info</span>
+            {{ obterErroCampoCadastro('endereco') }}
+          </span>
+        }
+      </div>
+
+      <!-- Termos de serviço -->
+      <div class="flex items-start gap-2.5 pt-1">
+        <input checked class="mt-0.5 w-4 h-4 text-primary rounded border-border focus:ring-primary/20 accent-primary cursor-pointer" id="terms" type="checkbox" />
+        <label class="text-xs text-text-muted leading-relaxed cursor-pointer select-none" for="terms">
+          Concordo com os <a class="text-slate-900 font-medium hover:underline hover:text-primary transition-colors" href="#">Termos de Uso</a> e <a class="text-slate-900 font-medium hover:underline hover:text-primary transition-colors" href="#">Política de Privacidade</a> do DoaLink.
+        </label>
+      </div>
+
+      <!-- Botão Cadastrar -->
+      <button class="w-full bg-primary hover:bg-primary-hover active:bg-[#002f4a] text-white py-2.5 rounded-lg font-medium text-sm transition-all shadow-xs hover:shadow flex items-center justify-center gap-2 mt-2" type="submit">
+        <span>Criar minha conta</span>
+        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+      </button>
+    </form>
   </section>
 </main>
 
-<!-- Footer -->
-<footer class="w-full bg-surface-container dark:bg-surface-container-highest mt-auto">
-  <div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-lg w-full max-w-7xl mx-auto gap-md md:gap-0">
-    <div class="flex flex-col items-center md:items-start gap-xs">
-      <span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-inverse-on-surface">DoaLink</span>
-      <p class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant opacity-80 hover:opacity-100 transition-opacity">
-        © 2026 DoaLink. Desenvolvido por VICTOR,Miguel ; ANGELO,Nicolas ; PINTO,Stanley ; MORAES,Daniel.
+<!-- Clean Typographic Footer -->
+<footer class="w-full border-t border-border-subtle mt-auto py-8">
+  <div class="flex flex-col md:flex-row justify-between items-center px-6 sm:px-10 md:px-12 w-full max-w-7xl mx-auto gap-4 md:gap-0">
+    <div class="flex flex-col items-center md:items-start gap-0.5">
+      <span class="font-medium text-sm text-slate-900">DoaLink</span>
+      <p class="text-xs text-text-muted text-center md:text-left">
+        © 2026 DoaLink. Desenvolvido por <span class="text-slate-700">VICTOR, Miguel; ANGELO, Nicolas; PINTO, Stanley; MORAES, Daniel</span>.
       </p>
     </div>
-    <nav class="flex flex-wrap justify-center gap-sm md:gap-md">
-      <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
-      <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Terms of Service</a>
-      <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Contact Us</a>
-      <a class="font-label-md text-label-md text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors opacity-80 hover:opacity-100" href="#">About Us</a>
+    <nav class="flex flex-wrap justify-center gap-5 text-xs text-text-muted">
+      <a class="hover:text-primary transition-colors" href="#">Política de Privacidade</a>
+      <a class="hover:text-primary transition-colors" href="#">Termos de Serviço</a>
+      <a class="hover:text-primary transition-colors" href="#">Central de Ajuda</a>
+      <a class="hover:text-primary transition-colors" href="#">Sobre o Projeto</a>
     </nav>
   </div>
 </footer>

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { DoacaoService } from '../../services/doacao.service';
 import { ItemDoacao } from '../../models/item-doacao.model';
@@ -10,12 +11,13 @@ import { ItemDoacao } from '../../models/item-doacao.model';
   styleUrl: './hub.component.css'
 })
 export class HubComponent implements OnInit {
-  doacoesDisponiveis: ItemDoacao[] = [];
-  isLoading = true;
-  mensagemErro = '';
+  doacoesDisponiveis = signal<ItemDoacao[]>([]);
+  isLoading = signal(true);
+  mensagemErro = signal('');
 
   constructor(
     private readonly doacaoService: DoacaoService,
+    private readonly router: Router,
     readonly authService: AuthService
   ) {}
 
@@ -23,34 +25,45 @@ export class HubComponent implements OnInit {
     this.carregarDoacoes();
   }
 
+  abrirDetalhes(idItem: number): void {
+    this.router.navigate(['/doacoes', idItem]);
+  }
+
   solicitarItem(idItem: number): void {
-    this.mensagemErro = '';
+    this.mensagemErro.set('');
+    const idReceptor = this.authService.obterIdUsuario();
+
+    if (!idReceptor) {
+      this.mensagemErro.set('Você precisa estar logado para solicitar um item.');
+      return;
+    }
 
     this.doacaoService.solicitarItem(idItem).subscribe({
       next: () => {
-        this.removerItemDaLista(idItem);
+        this.doacoesDisponiveis.update(itens => itens.filter(item => item.id_item !== idItem));
         alert('Solicitação realizada com sucesso!');
       },
       error: (erro) => {
         console.error('Erro ao solicitar item:', erro);
-        this.mensagemErro = 'Não foi possível solicitar este item. Tente novamente.';
+        this.mensagemErro.set('Não foi possível solicitar este item. Tente novamente.');
       }
     });
   }
 
   private carregarDoacoes(): void {
-    this.isLoading = true;
-    this.mensagemErro = '';
+    this.isLoading.set(true);
+    this.mensagemErro.set('');
 
     this.doacaoService.buscarDoacoesDisponiveis().subscribe({
       next: (itens) => {
-        this.doacoesDisponiveis = this.filtrarItensProprios(itens);
-        this.isLoading = false;
+        //this.doacoesDisponiveis.set(this.filtrarItensProprios(itens));
+        this.doacoesDisponiveis.set(itens);
+        this.isLoading.set(false);
       },
       error: (erro) => {
         console.error('Erro ao buscar doações:', erro);
-        this.mensagemErro = 'Não foi possível carregar as doações.';
-        this.isLoading = false;
+        this.mensagemErro.set('Não foi possível carregar as doações.');
+        this.isLoading.set(false);
       }
     });
   }
@@ -58,9 +71,5 @@ export class HubComponent implements OnInit {
   private filtrarItensProprios(itens: ItemDoacao[]): ItemDoacao[] {
     const idUsuario = this.authService.obterIdUsuario();
     return itens.filter(item => item.id_doador !== idUsuario);
-  }
-
-  private removerItemDaLista(idItem: number): void {
-    this.doacoesDisponiveis = this.doacoesDisponiveis.filter(item => item.id_item !== idItem);
   }
 }

@@ -13,13 +13,13 @@
     </div>
   </div>
 
-  @if (mensagemErro) {
+  @if (mensagemErro()) {
     <div class="bg-error-container text-on-error-container p-4 rounded-lg text-center">
-      {{ mensagemErro }}
+      {{ mensagemErro() }}
     </div>
   }
 
-  @if (isLoading) {
+  @if (isLoading()) {
     <!-- Loading State -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       @for (i of [1, 2, 3, 4]; track i) {
@@ -42,7 +42,7 @@
       }
     </div>
   } @else {
-    @if (doacoesDisponiveis.length === 0) {
+    @if (doacoesDisponiveis().length === 0) {
       <!-- Empty State -->
       <div class="flex flex-col items-center justify-center py-16 text-center">
         <span class="material-symbols-outlined text-[64px] text-outline mb-4">inventory_2</span>
@@ -52,13 +52,20 @@
     } @else {
       <!-- 4-Column Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        @for (doacao of doacoesDisponiveis; track doacao.id_item) {
-          <article class="group bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-            <div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center">
-              <div class="flex flex-col items-center gap-2 text-outline">
-                <span class="material-symbols-outlined text-[48px]">image</span>
-                <span class="font-label-sm text-label-sm">Sem imagem</span>
-              </div>
+        @for (doacao of doacoesDisponiveis(); track doacao.id_item) {
+          <article
+            (click)="abrirDetalhes(doacao.id_item)"
+            class="group bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col hover:shadow-md cursor-pointer transition-shadow"
+          >
+            <div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center overflow-hidden">
+              @if (doacao.foto) {
+                <img [src]="doacao.foto" [alt]="doacao.titulo" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              } @else {
+                <div class="flex flex-col items-center gap-2 text-outline">
+                  <span class="material-symbols-outlined text-[48px]">image</span>
+                  <span class="font-label-sm text-label-sm">Sem imagem</span>
+                </div>
+              }
               <div class="absolute top-3 left-3 bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-1 rounded-full shadow-sm">
                 Disponível
               </div>
@@ -68,7 +75,7 @@
               <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">{{ doacao.descricao }}</p>
               <div class="w-full mt-2 flex items-center justify-center">
                 <button
-                  (click)="solicitarItem(doacao.id_item)"
+                  (click)="$event.stopPropagation(); solicitarItem(doacao.id_item)"
                   class="w-full bg-primary text-on-primary font-label-md text-label-md py-2.5 rounded-lg hover:bg-primary/90 transition-colors active:scale-95 shadow-sm flex items-center justify-center gap-2"
                 >
                   <span class="material-symbols-outlined" style="font-size: 18px;">volunteer_activism</span>

@@ -1,4 +1,4 @@
-
+[[Principal]]
 **Objetivo da IA:** A estrutura visual (HTML/CSS) desta interface já está definida. Sua tarefa é gerar **exclusivamente o script TypeScript (`.ts`) do componente Angular (`PerfilComponent`)**. Este componente é responsável por exibir os dados do usuário logado e gerenciar o histórico de doações cadastradas por ele, garantindo reatividade e código limpo. 
 
 ## 1. Gerenciamento de Estado e Tipagem * Crie propriedades fortemente tipadas para armazenar os dados do perfil (ex: `usuarioLogado: Usuario`) e a lista de itens doados por ele (ex: `minhasDoacoes: ItemDoacao[] = []`). * É proibido o uso do tipo `any`. A interface `ItemDoacao` deve prever propriedades para lidar com o que está no HTML (como `titulo`, `descricao` e `status` - Ativo/Inativo ou Disponível/Doado). 

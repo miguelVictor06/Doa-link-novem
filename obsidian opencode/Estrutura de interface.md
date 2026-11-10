@@ -1,3 +1,4 @@
+[[Principal]]
 Nesta fase de prototipagem, a aplicação é composta pelas seguintes telas principais:
 
 - **Interface de Login:** Responsável pela autenticação e controle de acesso dos doadores e receptores.

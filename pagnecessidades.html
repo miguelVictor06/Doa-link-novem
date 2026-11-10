@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "primary-fixed-dim": "#93ccff",
+          "on-primary-container": "#b2d9ff",
+          "background": "#f8f9ff",
+          "on-error-container": "#93000a",
+          "on-surface-variant": "#40474f",
+          "surface-container-lowest": "#ffffff",
+          "on-primary": "#ffffff",
+          "surface-variant": "#e1e2e8",
+          "secondary-fixed-dim": "#bbc7db",
+          "surface-container-high": "#e7e8ee",
+          "surface": "#f8f9ff",
+          "inverse-on-surface": "#eff0f6",
+          "secondary-fixed": "#d7e3f8",
+          "tertiary-fixed": "#f3daff",
+          "surface-container": "#eceef3",
+          "secondary-container": "#d7e3f8",
+          "on-secondary-fixed": "#101c2b",
+          "on-surface": "#191c20",
+          "on-secondary": "#ffffff",
+          "outline-variant": "#c0c7d0",
+          "outline": "#717880",
+          "on-error": "#ffffff",
+          "tertiary": "#503d5d",
+          "primary": "#004870",
+          "surface-bright": "#f8f9ff",
+          "surface-tint": "#076396",
+          "inverse-surface": "#2e3135",
+          "inverse-primary": "#93ccff",
+          "primary-fixed": "#cce5ff",
+          "secondary": "#535f70",
+          "on-tertiary-fixed-variant": "#523f5f",
+          "tertiary-fixed-dim": "#d6bee4",
+          "on-secondary-fixed-variant": "#3c4858",
+          "tertiary-container": "#695576",
+          "on-primary-fixed-variant": "#004b73",
+          "error-container": "#ffdad6",
+          "on-primary-fixed": "#001d31",
+          "surface-container-low": "#f2f3f9",
+          "on-tertiary-fixed": "#251431",
+          "on-background": "#191c20",
+          "on-secondary-container": "#596576",
+          "on-tertiary-container": "#e6ccf3",
+          "primary-container": "#006194",
+          "on-tertiary": "#ffffff",
+          "surface-container-highest": "#e1e2e8",
+          "error": "#ba1a1a",
+          "surface-dim": "#d8dae0"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "gutter": "24px",
+          "xl": "32px",
+          "md": "16px",
+          "xs": "4px",
+          "sm": "8px",
+          "margin-desktop": "64px",
+          "base": "8px",
+          "margin-mobile": "16px",
+          "lg": "24px"
+        },
+        "fontFamily": {
+          "display-lg": [
+            "Inter"
+          ],
+          "label-lg": [
+            "Inter"
+          ],
+          "label-md": [
+            "Inter"
+          ],
+          "title-lg": [
+            "Inter"
+          ],
+          "body-md": [
+            "Inter"
+          ],
+          "headline-lg": [
+            "Inter"
+          ],
+          "body-lg": [
+            "Inter"
+          ],
+          "headline-lg-mobile": [
+            "Inter"
+          ]
+        },
+        "fontSize": {
+          "display-lg": [
+            "57px",
+            {
+              "lineHeight": "64px",
+              "letterSpacing": "-0.25px",
+              "fontWeight": "400"
+            }
+          ],
+          "label-lg": [
+            "14px",
+            {
+              "lineHeight": "20px",
+              "letterSpacing": "0.1px",
+              "fontWeight": "500"
+            }
+          ],
+          "label-md": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "letterSpacing": "0.5px",
+              "fontWeight": "500"
+            }
+          ],
+          "title-lg": [
+            "22px",
+            {
+              "lineHeight": "28px",
+              "letterSpacing": "0px",
+              "fontWeight": "500"
+            }
+          ],
+          "body-md": [
+            "14px",
+            {
+              "lineHeight": "20px",
+              "letterSpacing": "0.25px",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-lg": [
+            "32px",
+            {
+              "lineHeight": "40px",
+              "letterSpacing": "0px",
+              "fontWeight": "600"
+            }
+          ],
+          "body-lg": [
+            "16px",
+            {
+              "lineHeight": "24px",
+              "letterSpacing": "0.5px",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-lg-mobile": [
+            "28px",
+            {
+              "lineHeight": "36px",
+              "letterSpacing": "0px",
+              "fontWeight": "600"
+            }
+          ]
+        }
+      },
+    },
+  }</script></head><body class="bg-background font-body-md text-on-surface"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-lg max-w-[1280px] mx-auto flex items-center justify-between gap-md"><div class="flex items-center gap-xl"><div class="flex items-center gap-sm shrink-0"><img alt="A modern, minimalist logo for 'DoaLink', a donation marketplace. The logo should feature a symbol of two hands connecting or a heart integrated with a location pin. Professional, trustworthy, and clean design. Primary color: #0284c7. White background.. Design context: - Primary color: #0284c7
+- Font: inter
+- Mode: light
+- Roundness: rounded-sm
+. The logo should be visually consistent with these brand tokens." class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UepYjJcbBucWqyDK1aCYPWMJjnnDaRKORtShNii7KcjK7CaUIOfxNYIifURgnM7fdaHPeIxiyALAG7rAfccB9OgyoDAZ_NQcGaw6OkOWRd3B-MPko3u2z0vk125f4p54SVA03LqgLYqJGjbRVGHxMh2SMew_YwV17XSxOySjaWk6DnCe9qZ20YnKK7aBn-pRYbgJ8KXvRsctg8qsMO7onzZ92RiDwZlghEF77fcSgKXzXfFqmIMp-38Q"/><span class="font-title-lg text-title-lg font-bold text-primary tracking-tight">DoaLink</span></div><nav class="hidden lg:flex items-center gap-md" data-active-classes="text-primary font-bold border-b-2 border-primary"><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface px-xs py-sm transition-colors" data-path="marketplace" href="#">Marketplace</a><a aria-current="page" class="px-xs py-sm transition-colors text-primary font-bold border-b-2 border-primary" data-path="pedidos" href="#">Pedidos</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface px-xs py-sm transition-colors" data-path="compreenda-o-nosso-site" href="#">Compreenda o nosso site</a></nav></div><div class="flex-1 max-w-md hidden md:block"><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-outline text-[20px] pointer-events-none">search</span><input class="w-full pl-10 pr-4 py-2 bg-surface-container-low rounded-xl font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container transition-all" placeholder="Buscar pedidos, necessidades ou locais..." type="text"/></div></div><div class="flex items-center gap-md shrink-0"><button aria-label="Notificações" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span></button><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors hidden sm:inline-flex" data-path="perfil" href="#">Perfil</a><a class="inline-flex items-center gap-xs px-md py-2 bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg rounded-lg shadow-sm transition-all" data-path="criar-pedido" href="#"><span class="material-symbols-outlined text-[20px]">add_circle</span><span>Criar Pedido</span></a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-background"><div class="w-full px-lg max-w-[1280px] mx-auto min-h-[calc(100vh-160px)]"><div class="flex flex-col w-full pb-xl">
+<!-- Top Stat Highlights & Context -->
+<div class="w-full pt-lg pb-md">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-lg">
+<div class="space-y-xs max-w-2xl">
+<div class="inline-flex items-center gap-xs px-sm py-xs bg-secondary-container text-on-secondary-fixed rounded-full text-label-md font-label-md">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+          Rede Comunitária de Apoio
+        </div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Mural de Pedidos</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Pessoas e instituições que precisam da sua solidariedade. Conecte-se diretamente com quem necessita ou registre uma solicitação.</p>
+</div>
+<!-- Quick Metrics Counters -->
+<div class="flex items-center gap-sm sm:gap-md shrink-0 bg-surface-container-lowest p-sm sm:p-md rounded-xl shadow-sm">
+<div class="flex items-center gap-sm px-sm py-xs">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">pending_actions</span>
+</div>
+<div>
+<div class="font-title-lg text-title-lg font-bold text-on-surface leading-tight">142</div>
+<div class="font-label-md text-label-md text-on-surface-variant">Pedidos Abertos</div>
+</div>
+</div>
+<div class="h-8 w-px bg-surface-variant"></div>
+<div class="flex items-center gap-sm px-sm py-xs">
+<div class="w-10 h-10 rounded-lg bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">handshake</span>
+</div>
+<div>
+<div class="font-title-lg text-title-lg font-bold text-on-surface leading-tight">890+</div>
+<div class="font-label-md text-label-md text-on-surface-variant">Famílias Atendidas</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Callout Banner: Precisa de Ajuda -->
+<div class="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary-container via-primary to-primary-container p-lg text-on-primary shadow-sm mb-xl">
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-md">
+<div class="flex items-start sm:items-center gap-md">
+<div class="w-12 h-12 rounded-xl bg-surface-container-lowest/15 backdrop-blur-md flex items-center justify-center text-on-primary shrink-0">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">add_moderator</span>
+</div>
+<div class="space-y-xs">
+<h2 class="font-title-lg text-title-lg font-bold text-on-primary">Precisa de Ajuda? Faça seu Pedido na Comunidade</h2>
+<p class="font-body-md text-body-md text-on-primary-container max-w-xl">
+              Publique as necessidades urgentes da sua família ou da sua instituição sem qualquer taxa. Nossa rede de doadores locais será mobilizada de forma transparente.
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-sm shrink-0">
+<button class="inline-flex items-center gap-xs px-lg py-2.5 bg-surface-container-lowest text-primary hover:bg-surface-bright font-label-lg text-label-lg font-semibold rounded-lg shadow-sm transition-all duration-200" id="open-modal-btn" type="button">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">post_add</span>
+<span>Criar Pedido de Doação</span>
+</button>
+</div>
+</div>
+<!-- Background Ambient Graphics -->
+<div class="absolute -right-8 -bottom-10 w-56 h-56 rounded-full bg-white/5 blur-2xl pointer-events-none"></div>
+<div class="absolute right-1/3 -top-12 w-48 h-48 rounded-full bg-primary-fixed-dim/10 blur-xl pointer-events-none"></div>
+</div>
+<!-- Filters and Order Row -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-md pb-md">
+<!-- Filter Chips -->
+<div class="flex items-center gap-xs sm:gap-sm overflow-x-auto pb-1 scrollbar-none" id="category-pills">
+<button class="filter-chip active-chip px-md py-1.5 rounded-xl font-label-lg text-label-lg transition-all shrink-0 bg-primary-container text-on-primary font-medium" data-category="all">
+          Todos os Pedidos
+        </button>
+<button class="filter-chip px-md py-1.5 rounded-xl font-label-lg text-label-lg transition-all shrink-0 bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface" data-category="alimentos">
+          Alimentos &amp; Cestas
+        </button>
+<button class="filter-chip px-md py-1.5 rounded-xl font-label-lg text-label-lg transition-all shrink-0 bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface" data-category="moveis">
+          Móveis &amp; Eletrodomésticos
+        </button>
+<button class="filter-chip px-md py-1.5 rounded-xl font-label-lg text-label-lg transition-all shrink-0 bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface" data-category="vestuario">
+          Vestuário
+        </button>
+<button class="filter-chip px-md py-1.5 rounded-xl font-label-lg text-label-lg transition-all shrink-0 bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface" data-category="escolar">
+          Materiais Escolares
+        </button>
+<button class="filter-chip px-md py-1.5 rounded-xl font-label-lg text-label-lg transition-all shrink-0 bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface" data-category="saude">
+          Saúde &amp; Higiene
+        </button>
+</div>
+<!-- Sorting Select Container -->
+<div class="flex items-center gap-sm shrink-0 self-end lg:self-auto">
+<span class="font-label-md text-label-md text-on-surface-variant">Ordenar por:</span>
+<div class="relative inline-block">
+<select class="appearance-none bg-surface-container-lowest text-on-surface font-label-lg text-label-lg py-1.5 pl-md pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
+<option>Mais recentes</option>
+<option>Maior urgência</option>
+<option>Mais próximos de mim</option>
+<option>Quase atendidos</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-2 pointer-events-none text-outline text-[18px]">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Cards Grid (Community Requests) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg mb-xl">
+<!-- CARD 1 -->
+<article class="flex flex-col bg-surface-container-lowest rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-200 justify-between">
+<div class="space-y-md">
+<!-- Card Header Badges -->
+<div class="flex items-center justify-between gap-sm">
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[14px]">lunch_dining</span>
+            Alimentos
+          </span>
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-error-container text-on-error-container font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+            Urgência Alta
+          </span>
+</div>
+<!-- Title & Location -->
+<div>
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">
+            Cesta Básica para Família de 5 Pessoas
+          </h3>
+<div class="flex items-center gap-xs font-body-md text-body-md text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px] text-outline">location_on</span>
+<span>Maria do Carmo • Belo Horizonte - MG</span>
+</div>
+</div>
+<!-- Description -->
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+          Mãe solo desempregada com 3 filhos pequenos necessita de doação de alimentos não perecíveis e leite integral para manter as refeições diárias da família.
+        </p>
+<!-- Progress Tracker -->
+<div class="space-y-xs pt-xs bg-surface-container-low p-sm rounded-lg">
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="text-on-surface-variant">Atendido: <strong>40%</strong> (2 de 5 itens doados)</span>
+<span class="text-primary font-bold">Faltam 3</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500" style="width: 40%;"></div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-sm pt-md mt-md">
+<button class="flex-1 py-2 px-md bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-medium rounded-lg text-center transition-colors shadow-sm flex items-center justify-center gap-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">volunteer_activism</span>
+          Ajudar neste Pedido
+        </button>
+<button class="p-2 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded-lg transition-colors" title="Ver Detalhes" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</article>
+<!-- CARD 2 -->
+<article class="flex flex-col bg-surface-container-lowest rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-200 justify-between">
+<div class="space-y-md">
+<!-- Card Header Badges -->
+<div class="flex items-center justify-between gap-sm">
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[14px]">chair</span>
+            Móveis
+          </span>
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-secondary-fixed text-on-secondary-fixed-variant font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Urgência Média
+          </span>
+</div>
+<!-- Title & Location -->
+<div>
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">
+            Mesa de Estudos e Cadeira para Estudante
+          </h3>
+<div class="flex items-center gap-xs font-body-md text-body-md text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px] text-outline">location_on</span>
+<span>Carlos Eduardo • Contagem - MG</span>
+</div>
+</div>
+<!-- Description -->
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+          Estudante bolsista do terceiro ano do ensino médio prestando vestibular precisa de uma mesinha simples e cadeira confortável para estudar em casa.
+        </p>
+<!-- Progress Tracker -->
+<div class="space-y-xs pt-xs bg-surface-container-low p-sm rounded-lg">
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="text-on-surface-variant">Atendido: <strong>0%</strong> (Aguardando doador)</span>
+<span class="text-secondary font-bold">2 itens</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500" style="width: 5%;"></div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-sm pt-md mt-md">
+<button class="flex-1 py-2 px-md bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-medium rounded-lg text-center transition-colors shadow-sm flex items-center justify-center gap-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">handshake</span>
+          Oferecer Doação
+        </button>
+<button class="p-2 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded-lg transition-colors" title="Ver Detalhes" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</article>
+<!-- CARD 3 -->
+<article class="flex flex-col bg-surface-container-lowest rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-200 justify-between">
+<div class="space-y-md">
+<!-- Card Header Badges -->
+<div class="flex items-center justify-between gap-sm">
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[14px]">checkroom</span>
+            Vestuário
+          </span>
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-error-container text-on-error-container font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+            Urgência Alta
+          </span>
+</div>
+<!-- Title & Location -->
+<div>
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">
+            Roupas Infantis de Inverno (Tam. 4 a 8)
+          </h3>
+<div class="flex items-center gap-xs font-body-md text-body-md text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-medium text-on-surface">Lar Solidário Esperança (ONG)</span>
+<span class="text-outline">• Betim - MG</span>
+</div>
+</div>
+<!-- Description -->
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+          Abrigo comunitário necessita de agasalhos, calças, meias e cobertores para acolhimento de 12 crianças em situação de vulnerabilidade provisória.
+        </p>
+<!-- Progress Tracker -->
+<div class="space-y-xs pt-xs bg-surface-container-low p-sm rounded-lg">
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="text-on-surface-variant">Atendido: <strong>65%</strong> (13 de 20 peças)</span>
+<span class="text-primary font-bold">Faltam 7</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500" style="width: 65%;"></div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-sm pt-md mt-md">
+<button class="flex-1 py-2 px-md bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-medium rounded-lg text-center transition-colors shadow-sm flex items-center justify-center gap-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">volunteer_activism</span>
+          Ajudar neste Pedido
+        </button>
+<button class="p-2 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded-lg transition-colors" title="Ver Detalhes" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</article>
+<!-- CARD 4 -->
+<article class="flex flex-col bg-surface-container-lowest rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-200 justify-between">
+<div class="space-y-md">
+<!-- Card Header Badges -->
+<div class="flex items-center justify-between gap-sm">
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[14px]">school</span>
+            Materiais Escolares
+          </span>
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-secondary-fixed text-on-secondary-fixed-variant font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Moderada
+          </span>
+</div>
+<!-- Title & Location -->
+<div>
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">
+            Cadernos, Lápis de Cor e Mochila Escolar
+          </h3>
+<div class="flex items-center gap-xs font-body-md text-body-md text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px] text-outline">location_on</span>
+<span>Juliana Santos • Belo Horizonte - MG</span>
+</div>
+</div>
+<!-- Description -->
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+          Material pedagógico para dois irmãos de 7 e 9 anos iniciarem o período letivo na rede pública municipal com dignidade e entusiasmo.
+        </p>
+<!-- Progress Tracker -->
+<div class="space-y-xs pt-xs bg-surface-container-low p-sm rounded-lg">
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="text-on-surface-variant">Atendido: <strong>25%</strong> (1 de 4 kits)</span>
+<span class="text-primary font-bold">Faltam 3</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500" style="width: 25%;"></div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-sm pt-md mt-md">
+<button class="flex-1 py-2 px-md bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-medium rounded-lg text-center transition-colors shadow-sm flex items-center justify-center gap-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">handshake</span>
+          Oferecer Doação
+        </button>
+<button class="p-2 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded-lg transition-colors" title="Ver Detalhes" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</article>
+<!-- CARD 5 -->
+<article class="flex flex-col bg-surface-container-lowest rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-200 justify-between">
+<div class="space-y-md">
+<!-- Card Header Badges -->
+<div class="flex items-center justify-between gap-sm">
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[14px]">kitchen</span>
+            Eletrodomésticos
+          </span>
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-error-container text-on-error-container font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+            Urgência Alta
+          </span>
+</div>
+<!-- Title & Location -->
+<div>
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">
+            Geladeira ou Frigobar em Funcionamento
+          </h3>
+<div class="flex items-center gap-xs font-body-md text-body-md text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px] text-outline">location_on</span>
+<span>Dona Tereza • Santa Luzia - MG</span>
+</div>
+</div>
+<!-- Description -->
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+          Idosa que perdeu eletrodomésticos em enchente recente necessita com urgência de um refrigerador para conservação contínua de insulina e alimentos.
+        </p>
+<!-- Progress Tracker -->
+<div class="space-y-xs pt-xs bg-surface-container-low p-sm rounded-lg">
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="text-on-surface-variant">Atendido: <strong>0%</strong> (Aguardando)</span>
+<span class="text-error font-bold">1 unidade</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-sm pt-md mt-md">
+<button class="flex-1 py-2 px-md bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-medium rounded-lg text-center transition-colors shadow-sm flex items-center justify-center gap-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">handshake</span>
+          Oferecer Doação
+        </button>
+<button class="p-2 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded-lg transition-colors" title="Ver Detalhes" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</article>
+<!-- CARD 6 -->
+<article class="flex flex-col bg-surface-container-lowest rounded-xl p-lg shadow-sm hover:shadow-md transition-shadow duration-200 justify-between">
+<div class="space-y-md">
+<!-- Card Header Badges -->
+<div class="flex items-center justify-between gap-sm">
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[14px]">medication</span>
+            Saúde &amp; Higiene
+          </span>
+<span class="inline-flex items-center gap-xs px-sm py-0.5 rounded-full text-label-md font-label-md bg-primary-fixed text-on-primary-fixed-variant font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            Recorrente
+          </span>
+</div>
+<!-- Title & Location -->
+<div>
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface hover:text-primary transition-colors cursor-pointer">
+            Fraldas Geriátricas (Tamanho G)
+          </h3>
+<div class="flex items-center gap-xs font-body-md text-body-md text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-medium text-on-surface">Asilo São Vicente de Paulo</span>
+<span class="text-outline">• Sabará - MG</span>
+</div>
+</div>
+<!-- Description -->
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+          Doação contínua de pacotes de fraldas geriátricas e sabonetes neutros para suporte a 28 idosos residentes na instituição filantrópica.
+        </p>
+<!-- Progress Tracker -->
+<div class="space-y-xs pt-xs bg-surface-container-low p-sm rounded-lg">
+<div class="flex justify-between items-center text-label-md font-label-md">
+<span class="text-on-surface-variant">Atendido: <strong>80%</strong> (24 de 30 pacotes)</span>
+<span class="text-primary font-bold">Faltam 6</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500" style="width: 80%;"></div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-sm pt-md mt-md">
+<button class="flex-1 py-2 px-md bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg font-medium rounded-lg text-center transition-colors shadow-sm flex items-center justify-center gap-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">volunteer_activism</span>
+          Ajudar neste Pedido
+        </button>
+<button class="p-2 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded-lg transition-colors" title="Ver Detalhes" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</article>
+</div>
+<!-- How it Works Infobox Section -->
+<section class="bg-surface-container-lowest rounded-xl p-lg md:p-xl shadow-sm mb-lg">
+<div class="max-w-3xl mb-lg">
+<div class="font-label-md text-label-md uppercase tracking-wider text-primary font-semibold">Processo Confiável</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">Como funcionam os pedidos no DoaLink?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Conectamos doadores diretamente com solicitantes validados por proximidade geográfica e necessidade real.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="flex items-start gap-md">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold shrink-0">1</div>
+<div class="space-y-xs">
+<h4 class="font-title-lg text-title-lg font-semibold text-on-surface">Cadastro do Pedido</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Quem precisa descreve o item, nível de urgência e cidade para que a solicitação seja listada publicamente.</p>
+</div>
+</div>
+<div class="flex items-start gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary font-bold shrink-0">2</div>
+<div class="space-y-xs">
+<h4 class="font-title-lg text-title-lg font-semibold text-on-surface">Contato Direto</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">O doador se voluntaria e combina os detalhes da entrega ou retirada de maneira 100% segura e direta.</p>
+</div>
+</div>
+<div class="flex items-start gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant font-bold shrink-0">3</div>
+<div class="space-y-xs">
+<h4 class="font-title-lg text-title-lg font-semibold text-on-surface">Confirmação &amp; Impacto</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Ao receber a doação, o pedido é atualizado ou encerrado, alimentando a transparência e confiança coletiva.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Modal: Criar Pedido de Doação -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-md bg-inverse-surface/50 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300" id="request-modal">
+<div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-lg sm:p-xl space-y-lg relative">
+<!-- Modal Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">post_add</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface">Novo Pedido de Doação</h3>
+<p class="font-label-md text-label-md text-on-surface-variant">Preencha os dados da sua solicitação</p>
+</div>
+</div>
+<button class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors" id="close-modal-btn" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Modal Form -->
+<form class="space-y-md" id="request-form">
+<!-- Titulo do Pedido -->
+<div class="space-y-xs">
+<label class="font-label-lg text-label-lg font-semibold text-on-surface">O que você ou sua instituição precisa? *</label>
+<input class="w-full px-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container transition-all" placeholder="Ex: Cesta básica com leite, Roupa de bebê tamanho P..." required="" type="text"/>
+</div>
+<!-- Categoria & Urgência em Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
+<div class="space-y-xs">
+<label class="font-label-lg text-label-lg font-semibold text-on-surface">Categoria *</label>
+<div class="relative">
+<select class="w-full appearance-none px-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container transition-all cursor-pointer" required="">
+<option disabled="" selected="" value="">Selecione uma categoria</option>
+<option value="alimentos">Alimentos &amp; Cestas</option>
+<option value="moveis">Móveis</option>
+<option value="eletro">Eletrodomésticos</option>
+<option value="vestuario">Vestuário</option>
+<option value="escolar">Material Escolar</option>
+<option value="saude">Saúde &amp; Higiene</option>
+<option value="outro">Outros</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 pointer-events-none text-outline text-[20px]">expand_more</span>
+</div>
+</div>
+<div class="space-y-xs">
+<label class="font-label-lg text-label-lg font-semibold text-on-surface">Nível de Urgência *</label>
+<div class="relative">
+<select class="w-full appearance-none px-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:bg-surface-container transition-all cursor-pointer" required="">
+<option value="alta">Urgente (Necessidade imediata)</option>
+<option selected="" value="moderada">Moderada (Até 15 dias)</option>
+<option value="baixa">Baixa / Planejada</option>
+<option value="recorrente">Recorrente (Institucional)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 pointer-events-none text-outline text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Localização -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+<div class="sm:col-span-2 space-y-xs">
+<label class="font-label-lg text-label-lg font-semibold text-on-surface">Cidade *</label>
+<input class="w-full px-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container transition-all" placeholder="Ex: Belo Horizonte" required="" type="text"/>
+</div>
+<div class="space-y-xs">
+<label class="font-label-lg text-label-lg font-semibold text-on-surface">Estado *</label>
+<input class="w-full px-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline uppercase focus:outline-none focus:bg-surface-container transition-all" maxlength="2" placeholder="MG" required="" type="text"/>
+</div>
+</div>
+<!-- Descrição -->
+<div class="space-y-xs">
+<label class="font-label-lg text-label-lg font-semibold text-on-surface">Descrição detalhada da necessidade *</label>
+<textarea class="w-full px-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container transition-all resize-none" placeholder="Conte quem receberá a doação, a situação atual e outros detalhes que auxiliem o doador a compreender o contexto..." required="" rows="3"></textarea>
+</div>
+<!-- Contato WhatsApp / Telefone -->
+<div class="space-y-xs">
+<label class="font-label-lg text-label-lg font-semibold text-on-surface">Telefone / WhatsApp para contato com doadores *</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline text-[20px]">chat</span>
+<input class="w-full pl-10 pr-md py-2.5 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container transition-all" placeholder="(31) 98765-4321" required="" type="tel"/>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">Seu telefone só será exibido a doadores autenticados que decidirem apoiar seu pedido.</p>
+</div>
+<!-- Action Footer -->
+<div class="flex items-center justify-end gap-sm pt-sm">
+<button class="px-lg py-2.5 text-on-surface-variant hover:text-on-surface font-label-lg text-label-lg font-medium transition-colors" id="cancel-modal-btn" type="button">
+            Cancelar
+          </button>
+<button class="px-xl py-2.5 bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg font-semibold rounded-lg shadow-sm transition-all flex items-center gap-xs" type="submit">
+<span class="material-symbols-outlined text-[18px]">publish</span>
+<span>Publicar Pedido</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+<script>
+    // Modal Interaction
+    const modal = document.getElementById('request-modal');
+    const openBtn = document.getElementById('open-modal-btn');
+    const closeBtn = document.getElementById('close-modal-btn');
+    const cancelBtn = document.getElementById('cancel-modal-btn');
+    const requestForm = document.getElementById('request-form');
+
+    function openModal() {
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }, 300);
+    }
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    requestForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Pedido cadastrado com sucesso! Em instantes estará visível para a comunidade DoaLink.');
+      closeModal();
+      requestForm.reset();
+    });
+
+    // Simple Filter Pills Interaction
+    const pills = document.querySelectorAll('.filter-chip');
+    pills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => {
+          p.classList.remove('bg-primary-container', 'text-on-primary', 'font-medium');
+          p.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+        });
+        pill.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+        pill.classList.add('bg-primary-container', 'text-on-primary', 'font-medium');
+      });
+    });
+  </script>
+</div></div></main><footer class="w-full bg-surface-container-lowest mt-xl shadow-[0_-1px_8px_rgba(0,0,0,0.02)]"><div class="w-full px-lg max-w-[1280px] mx-auto py-lg flex flex-col sm:flex-row items-center justify-between gap-md"><p class="font-body-md text-body-md text-on-surface-variant">© 2024 DoaLink Marketplace de Doações. Todos os direitos reservados.</p><div class="flex items-center gap-lg"><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="privacidade" href="#">Privacidade</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="termos" href="#">Termos</a><a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" data-path="suporte" href="#">Suporte</a></div></div></footer></body></html>

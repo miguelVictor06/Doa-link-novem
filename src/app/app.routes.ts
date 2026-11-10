@@ -15,9 +15,27 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'doacoes/:id',
+    loadComponent: () =>
+      import('./components/detalhes-doacao/detalhes-doacao.component').then(m => m.DetalhesDoacaoComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'pesquisar',
     loadComponent: () =>
       import('./components/pesquisar/pesquisar.component').then(m => m.PesquisarComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'pedidos/criar',
+    loadComponent: () =>
+      import('./components/criacao-pedido/criacao-pedido.component').then(m => m.CriacaoPedidoComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'pedidos',
+    loadComponent: () =>
+      import('./components/pedidos/pedidos.component').then(m => m.PedidosComponent),
     canActivate: [authGuard]
   },
   {

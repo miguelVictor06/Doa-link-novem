@@ -1,16 +1,17 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, catchError, finalize, firstValueFrom, of, tap, timeout } from 'rxjs';
 import { LoginPayload, CadastroPayload, Usuario } from '../models/usuario.model';
+import { obterApiUrl } from '../config/api-config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8080/api';
+  private readonly apiUrl = obterApiUrl();
 
-  private readonly usuarioAtualSignal = signal<Usuario | null>(this.carregarSessao());
+  private readonly usuarioAtualSignal = signal<Usuario | null>(null);
 
   public readonly estaLogado = computed(() => this.usuarioAtualSignal() !== null);
   public readonly usuarioLogado = computed(() => this.usuarioAtualSignal());
@@ -21,21 +22,35 @@ export class AuthService {
   ) {}
 
   login(dados: LoginPayload): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.API_URL}/auth/login`, dados).pipe(
-      tap(usuario => this.salvarSessao(usuario))
+    return this.http.post<Usuario>(`${this.apiUrl}/auth/login`, dados).pipe(
+      tap(usuario => this.usuarioAtualSignal.set(usuario))
     );
   }
 
   cadastrar(dados: CadastroPayload): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.API_URL}/auth/cadastrar`, dados).pipe(
-      tap(usuario => this.salvarSessao(usuario))
+    return this.http.post<Usuario>(`${this.apiUrl}/auth/cadastrar`, dados).pipe(
+      tap(usuario => this.usuarioAtualSignal.set(usuario))
     );
   }
 
   logout(): void {
-    this.usuarioAtualSignal.set(null);
-    localStorage.removeItem('usuario_doalink');
-    this.router.navigate(['/login']);
+    this.http.post<void>(`${this.apiUrl}/auth/logout`, {}).pipe(
+      finalize(() => {
+        this.usuarioAtualSignal.set(null);
+        this.router.navigate(['/login']);
+      })
+    ).subscribe({
+      error: () => undefined
+    });
+  }
+
+  restaurarSessao(): Promise<void> {
+    return firstValueFrom(
+      this.http.get<Usuario>(`${this.apiUrl}/auth/me`).pipe(
+        timeout(5000),
+        catchError(() => of(null))
+      )
+    ).then(usuario => this.usuarioAtualSignal.set(usuario));
   }
 
   obterUsuarioLogado(): Usuario | null {
@@ -44,18 +59,5 @@ export class AuthService {
 
   obterIdUsuario(): number | null {
     return this.usuarioAtualSignal()?.id_usuario ?? null;
-  }
-
-  private salvarSessao(usuario: Usuario): void {
-    this.usuarioAtualSignal.set(usuario);
-    localStorage.setItem('usuario_doalink', JSON.stringify(usuario));
-  }
-
-  private carregarSessao(): Usuario | null {
-    const dadosSalvos = localStorage.getItem('usuario_doalink');
-    if (!dadosSalvos) {
-      return null;
-    }
-    return JSON.parse(dadosSalvos) as Usuario;
   }
 }

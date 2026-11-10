@@ -1,33 +1,38 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ItemDoacao, DoacaoPayload } from '../models/item-doacao.model';
+import { ItemDoacao } from '../models/item-doacao.model';
+import { obterApiUrl } from '../config/api-config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DoacaoService {
-  private readonly API_URL = 'http://localhost:8080/api';
+  private readonly apiUrl = obterApiUrl();
 
   constructor(private readonly http: HttpClient) {}
 
   buscarDoacoesDisponiveis(): Observable<ItemDoacao[]> {
-    return this.http.get<ItemDoacao[]>(`${this.API_URL}/doacoes`);
+    return this.http.get<ItemDoacao[]>(`${this.apiUrl}/doacoes`);
   }
 
-  cadastrarDoacao(dados: DoacaoPayload): Observable<ItemDoacao> {
-    return this.http.post<ItemDoacao>(`${this.API_URL}/doacoes`, dados);
+  buscarDoacaoPorId(idItem: number): Observable<ItemDoacao> {
+    return this.http.get<ItemDoacao>(`${this.apiUrl}/doacoes/${idItem}`);
+  }
+
+  cadastrarDoacaoFormData(formData: FormData): Observable<ItemDoacao> {
+    return this.http.post<ItemDoacao>(`${this.apiUrl}/doacoes`, formData);
   }
 
   solicitarItem(idItem: number): Observable<ItemDoacao> {
-    return this.http.put<ItemDoacao>(`${this.API_URL}/doacoes/${idItem}/solicitar`, {});
+    return this.http.put<ItemDoacao>(`${this.apiUrl}/doacoes/${idItem}/solicitar`, {});
   }
 
   excluirDoacao(idItem: number): Observable<void> {
-    return this.http.delete<void>(`${this.API_URL}/doacoes/${idItem}`);
+    return this.http.delete<void>(`${this.apiUrl}/doacoes/${idItem}`);
   }
 
   buscarHistoricoUsuario(idUsuario: number): Observable<ItemDoacao[]> {
-    return this.http.get<ItemDoacao[]>(`${this.API_URL}/usuarios/${idUsuario}/historico`);
+    return this.http.get<ItemDoacao[]>(`${this.apiUrl}/usuarios/${idUsuario}/historico`);
   }
 }

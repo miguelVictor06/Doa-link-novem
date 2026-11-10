@@ -1,3 +1,4 @@
+[[Principal]]
 **Objetivo da IA:** A estrutura visual desta interface já está definida. Sua tarefa é gerar **exclusivamente o script TypeScript (`.ts`) do componente Angular (`HubComponent`)**. Este componente é o centro do marketplace e deve focar na listagem de itens disponíveis e na lógica de solicitação, garantindo máxima organização e ausência de erros. 
 
 ## 1. Gerenciamento de Estado * Crie uma propriedade tipada para armazenar a lista de itens recebidos da API (ex: `doacoesDisponiveis: ItemDoacao[] = []`). * Implemente variáveis de controle de interface, como `isLoading: boolean` e `mensagemErro: string`, para controlar o *feedback* visual durante as chamadas HTTP. 

@@ -1,0 +1,27 @@
+[33m❯[39m Building...
+[32m✔[39m Building...
+[1mInitial chunk files[22m[2m | [22m[1mNames[22m                  [2m | [22m[1mRaw size[22m
+[32mstyles.css[39m         [2m | [22m[2mstyles[22m                 [2m | [22m[36m39.42 kB[39m[2m | [22m
+[32mmain.js[39m            [2m | [22m[2mmain[22m                   [2m | [22m[36m29.89 kB[39m[2m | [22m
+[32mchunk-33IR4FNB.js[39m  [2m | [22m[2m-[22m                      [2m | [22m [36m2.63 kB[39m[2m | [22m
+[32mchunk-7W47CN32.js[39m  [2m | [22m[2m-[22m                      [2m | [22m [36m1.71 kB[39m[2m | [22m
+[32mchunk-CZJLB7T5.js[39m  [2m | [22m[2m-[22m                      [2m | [22m [36m1.08 kB[39m[2m | [22m
+
+[1m [22m                  [2m | [22m[1mInitial total[22m          [2m | [22m[1m74.72 kB[22m
+
+[1mLazy chunk files[22m   [2m | [22m[1mNames[22m                  [2m | [22m[1mRaw size[22m
+[32mchunk-GX4K45YF.js[39m  [2m | [22m[2mmensagens-component[22m    [2m | [22m[36m32.80 kB[39m[2m | [22m
+[32mchunk-NTZL6J4Z.js[39m  [2m | [22m[2mpostar-doacao-component[22m[2m | [22m[36m29.42 kB[39m[2m | [22m
+[32mchunk-PEHQS4KN.js[39m  [2m | [22m[2mlogin-component[22m        [2m | [22m[36m27.82 kB[39m[2m | [22m
+[32mchunk-XDQJLTGH.js[39m  [2m | [22m[2mperfil-component[22m       [2m | [22m[36m24.49 kB[39m[2m | [22m
+[32mchunk-HP3NJ7BZ.js[39m  [2m | [22m[2mpesquisar-component[22m    [2m | [22m[36m20.55 kB[39m[2m | [22m
+[32mchunk-RKDMNEAI.js[39m  [2m | [22m[2mhub-component[22m          [2m | [22m[36m20.04 kB[39m[2m | [22m
+[32mchunk-2W66X6XG.js[39m  [2m | [22m[2msobre-component[22m        [2m | [22m[36m12.35 kB[39m[2m | [22m
+[32mchunk-B35QNMPQ.js[39m  [2m | [22m[2m-[22m                      [2m | [22m [36m1.67 kB[39m[2m | [22m
+
+Application bundle generation complete. [5.145 seconds] - 2026-08-30T17:07:39.380Z
+
+Watch mode enabled. Watching for file changes...
+NOTE: Raw file sizes do not reflect development server per-request transformations.
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m4200[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m

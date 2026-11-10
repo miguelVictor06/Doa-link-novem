@@ -1,0 +1,367 @@
+﻿<!-- Hero: propósito, métricas e chamada para publicar -->
+<section class="w-full bg-surface-container-low border-b border-outline-variant">
+  <div class="w-full max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-14 flex flex-col gap-8">
+    <div class="flex flex-col gap-4 max-w-3xl">
+      <span class="inline-flex w-fit items-center gap-2 rounded-full bg-primary-container px-3 py-1 font-label-sm text-label-sm text-on-primary">
+        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+        Mural de Pedidos
+      </span>
+      <h1 class="font-headline-lg text-headline-lg font-bold text-on-surface">
+        Publique o que sua comunidade precisa
+      </h1>
+      <p class="font-body-lg text-body-lg text-on-surface-variant">
+        Instituições e famílias publicam suas necessidades aqui. Doadores encontram uma causa e ajudam com o
+        que têm. Sem dinheiro no meio: apenas pessoas se encontrando.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 flex flex-col gap-1">
+        <span class="font-headline-lg text-headline-lg font-bold text-primary">{{ totalPedidosAbertos() }}</span>
+        <span class="font-label-md text-label-md text-on-surface">Pedidos Abertos</span>
+        <span class="font-body-md text-body-md text-on-surface-variant">Necessidades que ainda esperam apoio</span>
+      </div>
+      <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 flex flex-col gap-1">
+        <span class="font-headline-lg text-headline-lg font-bold text-primary">{{ familiasAtendidas() }}</span>
+        <span class="font-label-md text-label-md text-on-surface">Itens Atendidos</span>
+        <span class="font-body-md text-body-md text-on-surface-variant">Peças já entregues por quem viu o pedido</span>
+      </div>
+      <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 flex flex-col gap-3">
+        <span class="font-headline-lg text-headline-lg font-bold text-primary">{{ percentualGeral() }}%</span>
+        <span class="font-label-md text-label-md text-on-surface">Do mural foi atendido</span>
+        <div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
+          <div class="h-full rounded-full bg-primary transition-all duration-500" [style.width.%]="percentualGeral()"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-center gap-6 rounded-2xl bg-gradient-to-r from-primary to-secondary-container p-6 md:p-8">
+      <div class="flex flex-col gap-2 flex-1">
+        <h2 class="font-headline-md text-headline-md font-bold text-on-primary">
+          Tem algo que a sua comunidade precisa?
+        </h2>
+        <p class="font-body-md text-body-md text-on-primary/90">
+          Publique o pedido em menos de um minuto e deixe a rede de doadores fazer o resto.
+        </p>
+      </div>
+      <a
+        routerLink="/pedidos/criar"
+        class="shrink-0 self-start md:self-auto px-8 py-3.5 bg-surface-container-lowest text-primary font-label-md text-label-md rounded-full shadow-md hover:bg-surface-container-low transition-all active:scale-95 flex items-center gap-2"
+      >
+        <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">add</span>
+        Criar Pedido
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Filtros e ordenação -->
+<div class="w-full max-w-7xl mx-auto px-4 md:px-6 mt-8 flex flex-col gap-4">
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div class="flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoria">
+      @for (categoria of categoriasFiltro; track categoria) {
+        <button
+          type="button"
+          (click)="filtrarPorCategoria(categoria)"
+          [attr.aria-pressed]="categoriaSelecionada() === categoria"
+          class="px-4 py-2 rounded-full font-label-md text-label-md transition-colors active:scale-95 border"
+          [class.bg-primary-container]="categoriaSelecionada() === categoria"
+          [class.text-on-primary]="categoriaSelecionada() === categoria"
+          [class.border-transparent]="categoriaSelecionada() === categoria"
+          [class.bg-surface-container-lowest]="categoriaSelecionada() !== categoria"
+          [class.text-on-surface-variant]="categoriaSelecionada() !== categoria"
+          [class.border-outline-variant]="categoriaSelecionada() !== categoria"
+          [class.hover:bg-surface-container-high]="categoriaSelecionada() !== categoria"
+        >
+          {{ categoria }}
+        </button>
+      }
+    </div>
+
+    <div class="flex items-center gap-2">
+      <label for="ordem" class="font-label-md text-label-md text-on-surface-variant">Ordenar por</label>
+      <div class="relative">
+        <select
+          id="ordem"
+          (change)="alterarOrdem($any($event.target).value)"
+          class="pl-4 pr-10 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+        >
+          <option value="relevancia">Relevância</option>
+          <option value="urgencia">Urgência</option>
+          <option value="proximidade">Proximidade geográfica</option>
+        </select>
+        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          <span class="material-symbols-outlined text-outline text-[20px]">expand_more</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (mensagemErro()) {
+    <div class="bg-error-container text-on-error-container p-4 rounded-lg text-center font-body-md text-body-md">
+      {{ mensagemErro() }}
+    </div>
+  }
+
+  @if (mensagemSucesso()) {
+    <div class="bg-secondary-container text-on-secondary-container p-4 rounded-lg text-center font-body-md text-body-md flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+      {{ mensagemSucesso() }}
+    </div>
+  }
+</div>
+
+<!-- Cards de pedidos -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 py-8 flex flex-col gap-8">
+  @if (isLoading()) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (i of [1, 2, 3]; track i) {
+        <article class="bg-surface-container-lowest border border-outline-variant border-dashed rounded-xl p-5 flex flex-col gap-3 opacity-60">
+          <div class="h-6 w-2/3 bg-surface-variant rounded animate-pulse"></div>
+          <div class="h-4 w-1/2 bg-surface-variant rounded animate-pulse"></div>
+          <div class="h-2 w-full bg-surface-variant/30 rounded animate-pulse"></div>
+          <div class="h-10 w-full bg-surface-variant/30 border border-outline-variant rounded-lg"></div>
+        </article>
+      }
+    </div>
+  } @else {
+    @if (pedidosVisiveis().length === 0) {
+      <div class="flex flex-col items-center justify-center py-16 text-center">
+        <span class="material-symbols-outlined text-[64px] text-outline mb-4">volunteer_activism</span>
+        @if (pedidos().length === 0) {
+          <h2 class="font-headline-md text-headline-md text-on-surface mb-2">Nenhum pedido publicado ainda</h2>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            As necessidades publicadas pela comunidade aparecerão aqui. Seja o primeiro a publicar!
+          </p>
+        } @else {
+          <h2 class="font-headline-md text-headline-md text-on-surface mb-2">Nenhum pedido nesta categoria</h2>
+          <p class="font-body-md text-body-md text-on-surface-variant">
+            Não há pedidos nesta categoria. Seja o primeiro a publicar uma necessidade!
+          </p>
+        }
+        <button
+          type="button"
+          (click)="abrirCriacao(categoriaSelecionada())"
+          class="mt-6 px-8 py-3 bg-primary text-on-primary font-label-md text-label-md rounded-full hover:bg-primary-container transition-colors active:scale-95"
+        >
+          Criar Pedido
+        </button>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        @for (pedido of pedidosVisiveis(); track pedido.id_pedido) {
+          <article class="group bg-surface-container-lowest border border-outline-variant rounded-xl p-5 flex flex-col gap-4 hover:shadow-md transition-shadow">
+            <div class="flex flex-wrap gap-2">
+              <span class="inline-flex items-center gap-1.5 bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2.5 py-1 rounded-full">
+                <span class="material-symbols-outlined text-[16px]">{{ iconeCategoria(pedido.categoria) }}</span>
+                {{ pedido.categoria }}
+              </span>
+              <span class="inline-flex items-center gap-1.5 font-label-sm text-label-sm px-2.5 py-1 rounded-full" [class]="classeUrgencia(pedido.urgencia)">
+                <span class="material-symbols-outlined text-[16px]">bolt</span>
+                {{ rotuloUrgencia(pedido.urgencia) }}
+              </span>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <h3 class="font-label-md text-label-md text-on-surface line-clamp-2">{{ pedido.titulo }}</h3>
+              <span class="flex items-center gap-1.5 font-body-md text-body-md text-on-surface-variant">
+                <span class="material-symbols-outlined text-[18px]">location_on</span>
+                {{ pedido.cidade }}/{{ pedido.estado }}
+              </span>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+                <span>{{ percentualAtendido(pedido) }}% atendido</span>
+                <span>{{ pedido.quantidade_atendida }} de {{ pedido.quantidade }}</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
+                <div
+                  class="h-full rounded-full transition-all duration-500"
+                  [class.bg-primary]="!ehPedidoConcluido(pedido)"
+                  [class.bg-secondary-container]="ehPedidoConcluido(pedido)"
+                  [style.width.%]="percentualAtendido(pedido)"
+                ></div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2 mt-auto">
+              <button
+                type="button"
+                (click)="ajudarNoPedido(pedido)"
+                [disabled]="ehPedidoConcluido(pedido) || ehMeuPedido(pedido)"
+                class="w-full bg-primary text-on-primary font-label-md text-label-md py-2.5 rounded-lg hover:bg-primary/90 transition-colors active:scale-95 shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+                {{ ehPedidoConcluido(pedido) ? 'Pedido Atendido' : 'Ajudar neste Pedido' }}
+              </button>
+
+              @if (ehMeuPedido(pedido)) {
+                <span class="w-full py-2.5 rounded-lg border border-outline-variant font-label-sm text-label-sm text-on-surface-variant text-center">
+                  Pedido publicado por você
+                </span>
+              } @else {
+                <button
+                  type="button"
+                  (click)="verDetalhes(pedido)"
+                  class="w-full py-2.5 rounded-lg border border-outline-variant font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95"
+                >
+                  Ver Detalhes
+                </button>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    }
+  }
+</main>
+
+<!-- Como Funciona -->
+<section class="w-full bg-surface-container-low border-t border-outline-variant">
+  <div class="w-full max-w-7xl mx-auto px-4 md:px-6 py-12 flex flex-col gap-8">
+    <div class="flex flex-col gap-2 max-w-2xl">
+      <h2 class="font-headline-md text-headline-md font-bold text-on-surface">Como funciona</h2>
+      <p class="font-body-md text-body-md text-on-surface-variant">
+        Três passos, sem burocracia e sem intermediário.
+      </p>
+    </div>
+
+    <ol class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <li class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col gap-3">
+        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary-container text-on-primary font-label-md text-label-md">1</span>
+        <h3 class="font-label-md text-label-md text-on-surface">Cadastro</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          Crie sua conta no DoaLink e publique o pedido com título, categoria, urgência e local.
+        </p>
+      </li>
+      <li class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col gap-3">
+        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary-container text-on-primary font-label-md text-label-md">2</span>
+        <h3 class="font-label-md text-label-md text-on-surface">Contato Direto</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          O doador vê o pedido no mural, entra em contato pelo chat e combina a entrega com você.
+        </p>
+      </li>
+      <li class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 flex flex-col gap-3">
+        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary-container text-on-primary font-label-md text-label-md">3</span>
+        <h3 class="font-label-md text-label-md text-on-surface">Confirmação</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          Cada ajuda recebida atualiza a barra de progresso. Quando tudo é entregue, o pedido é marcado como atendido.
+        </p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<footer class="bg-surface-container-lowest border-t border-outline-variant w-full mt-auto">
+  <div class="flex flex-col md:flex-row justify-between items-center w-full px-4 md:px-6 py-8 max-w-7xl mx-auto gap-4">
+    <span class="font-body-md text-body-md text-on-surface-variant text-center md:text-left">
+      © 2026 DoaLink. Desenvolvido por VICTOR,Miguel ; ANGELO,Nicolas ; PINTO,Stanley ; MORAES,Daniel.
+    </span>
+  </div>
+</footer>
+
+<!-- Detalhes do pedido -->
+@if (pedidoEmDetalhe(); as pedido) {
+  <div
+    class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-inverse-surface/50 backdrop-blur-sm p-0 sm:p-4"
+    (click)="fecharDetalhes()"
+  >
+    <div
+      class="w-full sm:max-w-[560px] max-h-[92vh] overflow-y-auto bg-surface-container-lowest rounded-t-2xl sm:rounded-2xl border border-outline-variant shadow-xl"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-detalhe-pedido"
+    >
+      <div class="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-outline-variant sticky top-0 bg-surface-container-lowest">
+        <div class="flex flex-col gap-2">
+          <h2 id="titulo-detalhe-pedido" class="font-headline-md text-headline-md font-bold text-on-surface">
+            {{ pedido.titulo }}
+          </h2>
+          <div class="flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1.5 bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2.5 py-1 rounded-full">
+              <span class="material-symbols-outlined text-[16px]">{{ iconeCategoria(pedido.categoria) }}</span>
+              {{ pedido.categoria }}
+            </span>
+            <span class="inline-flex items-center gap-1.5 font-label-sm text-label-sm px-2.5 py-1 rounded-full" [class]="classeUrgencia(pedido.urgencia)">
+              {{ rotuloUrgencia(pedido.urgencia) }}
+            </span>
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="fecharDetalhes()"
+          aria-label="Fechar"
+          class="shrink-0 p-2 -mr-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="px-6 py-6 flex flex-col gap-5">
+        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">{{ pedido.descricao }}</p>
+
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+            <span>{{ percentualAtendido(pedido) }}% atendido</span>
+            <span>{{ pedido.quantidade_atendida }} de {{ pedido.quantidade }}</span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all duration-500"
+              [class.bg-primary]="!ehPedidoConcluido(pedido)"
+              [class.bg-secondary-container]="ehPedidoConcluido(pedido)"
+              [style.width.%]="percentualAtendido(pedido)"
+            ></div>
+          </div>
+        </div>
+
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="bg-surface-container-low border border-outline-variant rounded-lg p-4 flex flex-col gap-1">
+            <dt class="font-label-sm text-label-sm text-on-surface-variant">Local do pedido</dt>
+            <dd class="font-body-md text-body-md text-on-surface">{{ pedido.cidade }}/{{ pedido.estado }}</dd>
+          </div>
+          <div class="bg-surface-container-low border border-outline-variant rounded-lg p-4 flex flex-col gap-1">
+            <dt class="font-label-sm text-label-sm text-on-surface-variant">Publicado em</dt>
+            <dd class="font-body-md text-body-md text-on-surface">{{ formatarData(pedido.criado_em) }}</dd>
+          </div>
+          <div class="bg-surface-container-low border border-outline-variant rounded-lg p-4 flex flex-col gap-1">
+            <dt class="font-label-sm text-label-sm text-on-surface-variant">Quem pediu</dt>
+            <dd class="font-body-md text-body-md text-on-surface">{{ pedido.nome_solicitante }}</dd>
+          </div>
+          <div class="bg-surface-container-low border border-outline-variant rounded-lg p-4 flex flex-col gap-1">
+            <dt class="font-label-sm text-label-sm text-on-surface-variant">Telefone / WhatsApp</dt>
+            <dd class="font-body-md text-body-md text-on-surface">{{ pedido.telefone }}</dd>
+          </div>
+        </dl>
+
+        @if (ehMeuPedido(pedido)) {
+          <p class="bg-surface-container-high text-on-surface-variant p-4 rounded-lg font-body-md text-body-md">
+            Este pedido foi publicado por você. O contador de atendimento é atualizado a cada ajuda registrada.
+          </p>
+        }
+
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4 pt-4 border-t border-outline-variant">
+          <button
+            type="button"
+            (click)="fecharDetalhes()"
+            class="px-6 py-3 font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-full transition-all active:scale-95"
+          >
+            Fechar
+          </button>
+          @if (!ehMeuPedido(pedido)) {
+            <button
+              type="button"
+              (click)="falarComSolicitante(pedido.id_solicitante)"
+              class="px-6 py-3 bg-primary text-on-primary font-label-md text-label-md rounded-full shadow-md hover:bg-primary-container transition-all active:scale-95 flex items-center justify-center gap-2"
+            >
+              <span class="material-symbols-outlined text-[20px]">chat</span>
+              Falar com quem pediu
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

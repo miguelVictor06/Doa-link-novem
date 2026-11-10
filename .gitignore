@@ -45,5 +45,10 @@ Thumbs.db
 
 # DoaLink - arquivos locais
 /backend/doalink.db
+/backend/doalink.db-*
+/backend/backups/
 .env
 .env.*
+!.env.example
+!backend/.env.example
+

@@ -1,0 +1,28 @@
+SQLite conectado: D:\DoaLink3008\DoaLink\backend\doalink.db
+
+=====================================
+  DoaLink Backend rodando na porta 8080
+  Driver: sqlite
+=====================================
+Endpoints disponíveis:
+  POST   /api/auth/login
+  POST   /api/auth/cadastrar
+  GET    /api/usuarios
+  GET    /api/usuarios/:id
+  GET    /api/usuarios/:id/historico
+  GET    /api/doacoes
+  POST   /api/doacoes
+  PUT    /api/doacoes/:id
+  PUT    /api/doacoes/:id/solicitar
+  DELETE /api/doacoes/:id
+  GET    /api/mensagens/:idUsuario
+  POST   /api/mensagens
+  PUT    /api/mensagens/lidas
+
+Contas de teste:
+  mariana@email.com / 123456 (id: 1)
+  joao@email.com    / 123456 (id: 2)
+  ana@email.com     / 123456 (id: 3)
+
+Pronto para receber conexões!
+

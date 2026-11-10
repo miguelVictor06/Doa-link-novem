@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { DoacaoService } from '../../services/doacao.service';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-postar-doacao',
@@ -20,7 +19,6 @@ export class PostarDoacaoComponent implements OnInit {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly doacaoService: DoacaoService,
-    private readonly authService: AuthService,
     readonly router: Router
   ) {
     this.formularioDoacao = this.formBuilder.group({
@@ -64,10 +62,7 @@ export class PostarDoacaoComponent implements OnInit {
     this.isSubmitting = true;
     const formData = this.construirFormData();
 
-    this.doacaoService.cadastrarDoacao({
-      titulo: this.formularioDoacao.value.itemName,
-      descricao: this.formularioDoacao.value.description
-    }).subscribe({
+    this.doacaoService.cadastrarDoacaoFormData(formData).subscribe({
       next: () => {
         this.isSubmitting = false;
         this.router.navigate(['/hub']);
@@ -135,11 +130,6 @@ export class PostarDoacaoComponent implements OnInit {
 
     if (this.arquivoFoto) {
       formData.append('foto', this.arquivoFoto);
-    }
-
-    const idUsuario = this.authService.obterIdUsuario();
-    if (idUsuario) {
-      formData.append('id_doador', idUsuario.toString());
     }
 
     return formData;

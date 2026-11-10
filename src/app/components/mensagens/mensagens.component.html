@@ -24,37 +24,97 @@
         [class.hidden]="idSelecionado() !== null"
         [class.lg:block]="idSelecionado() !== null"
       >
-        @for (conversa of conversas(); track conversa.idOutro) {
+        <div class="flex items-center justify-between gap-2 p-3 border-b border-outline-variant/60 sticky top-0 z-10 bg-surface-container-lowest">
+          <p class="font-label-md text-label-md font-semibold text-on-surface">Conversas</p>
           <button
             type="button"
-            (click)="selecionarConversa(conversa)"
-            class="w-full flex items-center gap-3 p-4 text-left border-b border-outline-variant/50 last:border-b-0 hover:bg-surface-container-high transition-colors"
-            [class.bg-surface-container-high]="idSelecionado() === conversa.idOutro"
+            (click)="alternarSeletorContatos()"
+            [attr.aria-expanded]="seletorContatosAberto()"
+            title="Nova conversa"
+            class="flex items-center gap-1.5 rounded-full border border-outline-variant px-3 py-1.5 font-label-sm text-label-sm text-on-surface-variant hover:bg-surface-container-high hover:text-primary transition-colors active:scale-95"
           >
-            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface-container-low border border-outline-variant">
-              <span class="material-symbols-outlined text-on-surface-variant">person</span>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between gap-2">
-                <span class="font-label-md text-label-md text-on-surface truncate">{{ conversa.nome }}</span>
-                @if (conversa.ultima) {
-                  <span class="font-label-sm text-label-sm text-outline shrink-0">{{ formatarHorario(conversa.ultima.criado_em) }}</span>
-                }
-              </div>
-              <div class="flex items-center justify-between gap-2 mt-0.5">
-                <p class="font-body-md text-body-md text-on-surface-variant truncate">
-                  @if (conversa.ultima) {
-                    {{ conversa.ultima.texto }}
-                  } @else {
-                    Iniciar conversa
-                  }
-                </p>
-                @if (conversa.naoLidas > 0) {
-                  <span class="shrink-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 font-label-sm text-label-sm text-on-primary shadow-sm">{{ conversa.naoLidas }}</span>
-                }
-              </div>
-            </div>
+            <span class="material-symbols-outlined text-[18px]">person_add</span>
+            <span class="hidden sm:inline">Nova conversa</span>
           </button>
+        </div>
+
+        @if (seletorContatosAberto()) {
+          <div class="p-3 border-b border-outline-variant/60 bg-surface-container-low">
+            <p class="font-label-sm text-label-sm font-semibold text-on-surface">Escolha um contato</p>
+
+            @if (contatosDisponiveis().length === 0) {
+              <p class="font-label-sm text-label-sm text-on-surface-variant mt-2">
+                Nenhum contato disponível.
+              </p>
+            } @else if (contatosSemConversa().length === 0) {
+              <p class="font-label-sm text-label-sm text-on-surface-variant mt-2">
+                Todos os contatos já possuem conversa.
+              </p>
+            } @else {
+              <div class="flex flex-col gap-1 mt-2 max-h-48 overflow-y-auto">
+                @for (contato of contatosSemConversa(); track contato.id_usuario) {
+                  <button
+                    type="button"
+                    (click)="selecionarContato(contato.id_usuario)"
+                    class="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-surface-container-high transition-colors"
+                  >
+                    <span class="material-symbols-outlined text-[18px] text-on-surface-variant">person</span>
+                    <span class="min-w-0">
+                      <span class="block font-label-md text-label-md text-on-surface truncate">{{ contato.nome }}</span>
+                      <span class="block font-label-sm text-label-sm text-outline truncate">{{ contato.endereco }}</span>
+                    </span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        @if (conversas().length === 0) {
+          <div class="flex flex-col items-center justify-center px-6 py-12 text-center">
+            <span class="material-symbols-outlined text-[48px] text-outline mb-2">forum</span>
+            <p class="font-body-md text-body-md text-on-surface-variant">Nenhuma conversa ainda.</p>
+            <p class="font-label-sm text-label-sm text-outline mt-1">
+              Use "Nova conversa" para falar com outro membro.
+            </p>
+          </div>
+        } @else {
+          @for (conversa of conversas(); track conversa.idOutro) {
+            <button
+              type="button"
+              (click)="selecionarConversa(conversa)"
+              class="w-full flex items-center gap-3 p-4 text-left border-b border-outline-variant/50 last:border-b-0 hover:bg-surface-container-high transition-colors"
+              [class.bg-surface-container-high]="idSelecionado() === conversa.idOutro"
+              [class.bg-surface-container-low]="conversa.naoLidas > 0 && idSelecionado() !== conversa.idOutro"
+            >
+              <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface-container-low border border-outline-variant">
+                <span class="material-symbols-outlined text-on-surface-variant">person</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-2">
+                  <span
+                    class="font-label-md text-label-md text-on-surface truncate"
+                    [class.font-semibold]="conversa.naoLidas > 0"
+                  >{{ conversa.nome }}</span>
+                  @if (conversa.ultima) {
+                    <span class="font-label-sm text-label-sm text-outline shrink-0">{{ formatarPreviaHorario(conversa.ultima.criado_em) }}</span>
+                  }
+                </div>
+                <div class="flex items-center justify-between gap-2 mt-0.5">
+                  <p class="font-body-md text-body-md text-on-surface-variant truncate">
+                    @if (conversa.ultima) {
+                      {{ ehMinha(conversa.ultima) ? 'Você: ' : '' }}{{ conversa.ultima.texto }}
+                    } @else {
+                      Iniciar conversa
+                    }
+                  </p>
+                  @if (conversa.naoLidas > 0) {
+                    <span class="shrink-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 font-label-sm text-label-sm text-on-primary shadow-sm">{{ conversa.naoLidas }}</span>
+                  }
+                </div>
+              </div>
+            </button>
+          }
         }
       </div>
 
@@ -99,7 +159,7 @@
                 >
                   <p class="font-body-md text-body-md break-words whitespace-pre-wrap">{{ mensagem.texto }}</p>
                 </div>
-                <span class="text-[11px] leading-4 text-outline mt-1 px-1">{{ formatarHorario(mensagem.criado_em) }}</span>
+                <span class="text-[11px] leading-4 text-outline mt-1 px-1">{{ formatarDataHora(mensagem.criado_em) }}</span>
               </div>
             } @empty {
               <div class="h-full flex flex-col items-center justify-center text-center py-10">
@@ -110,23 +170,35 @@
             }
           </div>
 
-          <div class="flex items-center gap-2 p-3 border-t border-outline-variant/60 shrink-0">
-            <input
-              type="text"
-              placeholder="Digite uma mensagem..."
-              [(ngModel)]="textoNovaMensagem"
-              (keydown.enter)="enviar()"
-              class="flex-1 min-w-0 bg-surface-container-lowest border border-outline-variant rounded-full py-2.5 pl-4 pr-4 font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all"
-            />
-            <button
-              type="button"
-              (click)="enviar()"
-              [disabled]="!textoNovaMensagem.trim() || enviando()"
-              class="flex items-center gap-2 bg-primary text-on-primary font-label-md text-label-md rounded-full px-5 py-2.5 hover:bg-primary-container transition-colors active:scale-95 disabled:opacity-50 disabled:pointer-events-none shrink-0"
-            >
-              <span class="material-symbols-outlined text-[18px]">send</span>
-              Enviar
-            </button>
+          <div class="p-3 border-t border-outline-variant/60 shrink-0">
+            @if (erroEnvio()) {
+              <p class="font-label-sm text-label-sm text-error mb-2">{{ erroEnvio() }}</p>
+            }
+
+            <div class="flex items-end gap-2">
+              <textarea
+                rows="1"
+                placeholder="Digite uma mensagem..."
+                [(ngModel)]="textoNovaMensagem"
+                (keydown.enter)="aoPressionarEnter($event)"
+                [attr.aria-label]="'Mensagem para ' + conversa.nome"
+                class="flex-1 min-w-0 bg-surface-container-lowest border border-outline-variant rounded-2xl py-2.5 pl-4 pr-4 font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all resize-none max-h-32 overflow-y-auto"
+              ></textarea>
+              <button
+                type="button"
+                (click)="enviar()"
+                [disabled]="!textoNovaMensagem.trim() || enviando()"
+                class="flex items-center gap-2 bg-primary text-on-primary font-label-md text-label-md rounded-full px-5 py-2.5 hover:bg-primary-container transition-colors active:scale-95 disabled:opacity-50 disabled:pointer-events-none shrink-0"
+              >
+                @if (enviando()) {
+                  <span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span>
+                  Enviando...
+                } @else {
+                  <span class="material-symbols-outlined text-[18px]">send</span>
+                  Enviar
+                }
+              </button>
+            </div>
           </div>
         } @else {
           <div class="h-full flex flex-col items-center justify-center text-center p-6">

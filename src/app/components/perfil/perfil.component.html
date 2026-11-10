@@ -57,8 +57,15 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           @for (doacao of minhasDoacoes; track doacao.id_item) {
             <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow duration-200 flex flex-col group">
-              <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low border-b border-outline-variant">
-                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC00q0pTuF23TSXCU4foQnqj5pJHz44nKXQwxaX9Z_-Fqa8laJ3yvBp2K0dp7eOUx_eMZ6Ru0Ps2mTL7Pghs8oyi-iQ-X_nQlCGkgSnWzCyUA6tIn_KDSqQltnH_VwSj78iEKLenUL0OFjyu8Td0c3IrH6y-q2U6DWYAuAdHABbNuf9gWyRlpIe5QcV9ltJytbTc2ha0ySP-CBYw7l3HfQJ4Sett5zA3EolU9lhOeV1I13V-GDkvqWj" alt="doacao"/>
+              <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low border-b border-outline-variant flex items-center justify-center">
+                @if (doacao.foto) {
+                  <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" [src]="doacao.foto" [alt]="doacao.titulo"/>
+                } @else {
+                  <div class="flex flex-col items-center gap-2 text-outline">
+                    <span class="material-symbols-outlined text-[48px]">image</span>
+                    <span class="font-label-sm text-label-sm">Sem imagem</span>
+                  </div>
+                }
                 <div class="absolute top-3 left-3 font-label-sm text-label-sm px-2 py-1 rounded-full shadow-sm"
                      [class]="doacao.status === 'Disponivel' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-variant text-on-surface-variant'">
                   Status: {{ doacao.status === 'Disponivel' ? 'Ativo' : 'Inativo' }}

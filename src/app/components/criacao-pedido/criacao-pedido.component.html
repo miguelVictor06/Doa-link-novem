@@ -1,0 +1,261 @@
+<!-- Navegação secundária -->
+<div class="w-full max-w-7xl mx-auto px-4 md:px-6 pt-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <a
+      routerLink="/pedidos"
+      class="w-fit inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-outline-variant bg-surface-container-lowest font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors active:scale-95"
+    >
+      <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+      Voltar ao Mural de Pedidos
+    </a>
+    <span class="w-fit inline-flex items-center gap-2 rounded-full bg-secondary-container text-on-secondary-container px-3 py-1.5 font-label-sm text-label-sm">
+      <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">handshake</span>
+      Publicação Direta • 100% Solidária
+    </span>
+  </div>
+</div>
+
+<!-- Container principal: card do formulário -->
+<main class="flex-grow w-full max-w-[760px] mx-auto px-4 md:px-6 py-8 flex flex-col gap-6">
+  <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm overflow-hidden">
+    <!-- Cabeçalho do card -->
+    <div class="px-6 md:px-10 pt-8 md:pt-10 pb-6 border-b border-outline-variant flex items-start gap-4">
+      <span class="shrink-0 flex h-12 w-12 items-center justify-center rounded-full bg-primary-container text-on-primary">
+        <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+      </span>
+      <div class="flex flex-col gap-1">
+        <h1 class="font-headline-lg text-headline-lg font-bold text-on-surface">Criar Pedido de Doação</h1>
+        <p class="font-body-md text-body-md text-on-surface-variant">
+          Descreva o que sua família ou instituição precisa. O pedido aparece imediatamente no mural e cada ajuda
+          recebida atualiza a barra de progresso.
+        </p>
+      </div>
+    </div>
+
+    @if (mensagemErro()) {
+      <div class="mx-6 md:mx-10 mt-6 bg-error-container text-on-error-container p-4 rounded-lg text-center font-body-md text-body-md">
+        {{ mensagemErro() }}
+      </div>
+    }
+
+    <form [formGroup]="formularioPedido" (ngSubmit)="publicarPedido()" class="px-6 md:px-10 py-8 flex flex-col gap-6">
+      <!-- Título do Pedido -->
+      <div class="space-y-1.5">
+        <label for="tituloPedido" class="font-label-md text-label-md text-on-surface-variant">Título do Pedido</label>
+        <div class="relative group">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">title</span>
+          </div>
+          <input
+            formControlName="titulo"
+            id="tituloPedido"
+            type="text"
+            maxlength="120"
+            placeholder="Ex: Cesta Básica para Família com 3 Crianças"
+            class="block w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+          />
+          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('titulo') }}</span>
+        </div>
+      </div>
+
+      <!-- Categoria e Urgência -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="space-y-1.5">
+          <label for="categoriaPedido" class="font-label-md text-label-md text-on-surface-variant">Categoria</label>
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">category</span>
+            </div>
+            <select
+              formControlName="categoria"
+              id="categoriaPedido"
+              class="block w-full pl-12 pr-10 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            >
+              <option value="" disabled selected>Selecione</option>
+              @for (categoria of categorias; track categoria) {
+                <option [value]="categoria">{{ categoria }}</option>
+              }
+            </select>
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline">expand_more</span>
+            </div>
+          </div>
+          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('categoria') }}</span>
+          <span class="font-body-md text-body-md text-outline">Define em qual filtro o pedido aparece no mural.</span>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="urgenciaPedido" class="font-label-md text-label-md text-on-surface-variant">Nível de Urgência</label>
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">bolt</span>
+            </div>
+            <select
+              formControlName="urgencia"
+              id="urgenciaPedido"
+              class="block w-full pl-12 pr-10 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            >
+              @for (urgencia of urgencias; track urgencia) {
+                <option [value]="urgencia">{{ urgencia }}</option>
+              }
+            </select>
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline">expand_more</span>
+            </div>
+          </div>
+          <span class="font-body-md text-body-md text-outline">Define a cor da etiqueta no card do mural.</span>
+        </div>
+      </div>
+
+      <!-- Descrição Detalhada com contador -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between gap-2">
+          <label for="descricaoPedido" class="font-label-md text-label-md text-on-surface-variant">Descrição Detalhada</label>
+          <span
+            class="font-label-sm text-label-sm"
+            [class.text-error]="descricaoNoLimite()"
+            [class.text-outline]="!descricaoNoLimite()"
+          >{{ caracteresUsados() }}/{{ limiteDescricao }}</span>
+        </div>
+        <div class="relative group">
+          <div class="absolute top-3.5 left-4 flex items-start pointer-events-none">
+            <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">description</span>
+          </div>
+          <textarea
+            formControlName="descricao"
+            id="descricaoPedido"
+            rows="6"
+            [maxlength]="limiteDescricao"
+            placeholder="Explique o que precisa, para quem é, e como a entrega pode ser combinada com quem ajudar..."
+            class="block w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+          ></textarea>
+          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('descricao') }}</span>
+        </div>
+      </div>
+
+      <!-- Informações complementares -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="space-y-1.5">
+          <label for="cidadePedido" class="font-label-md text-label-md text-on-surface-variant">Cidade / Município</label>
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">location_city</span>
+            </div>
+            <input
+              formControlName="cidade"
+              id="cidadePedido"
+              type="text"
+              placeholder="Ex: Belo Horizonte - MG"
+              class="block w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            />
+            <span class="text-error text-sm mt-1 block">{{ obterErroCampo('cidade') }}</span>
+            <span class="font-body-md text-body-md text-outline">Inclua a sigla do estado ao final, com hífen.</span>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="telefonePedido" class="font-label-md text-label-md text-on-surface-variant">Contato / Telefone</label>
+          <div class="relative group">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">phone</span>
+            </div>
+            <input
+              formControlName="telefone"
+              id="telefonePedido"
+              type="tel"
+              placeholder="(00) 00000-0000"
+              class="block w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            />
+            <span class="text-error text-sm mt-1 block">{{ obterErroCampo('telefone') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quantidade -->
+      <div class="space-y-1.5">
+        <label for="quantidadePedido" class="font-label-md text-label-md text-on-surface-variant">
+          Quantos itens são necessários?
+        </label>
+        <div class="relative group">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">inventory</span>
+          </div>
+          <input
+            formControlName="quantidade"
+            id="quantidadePedido"
+            type="number"
+            min="1"
+            class="block w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+          />
+          <span class="text-error text-sm mt-1 block">{{ obterErroCampo('quantidade') }}</span>
+          <span class="font-body-md text-body-md text-outline">
+            É essa quantidade que alimenta a barra de progresso, como "13 de 20 peças".
+          </span>
+        </div>
+      </div>
+
+      <!-- Ações -->
+      <div class="flex flex-row items-center justify-end gap-4 pt-6 border-t border-outline-variant">
+        <a
+          routerLink="/pedidos"
+          class="px-8 py-3.5 font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-full transition-all active:scale-95"
+        >
+          Cancelar
+        </a>
+        <button
+          type="submit"
+          [disabled]="isSubmitting() || redirecionando()"
+          class="px-10 py-3.5 bg-primary text-on-primary font-label-md text-label-md rounded-full shadow-md hover:bg-primary-container hover:shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+          @if (isSubmitting() || redirecionando()) {
+            <span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span>
+            Publicando...
+          } @else {
+            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">send</span>
+            Publicar Pedido
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Card de compromisso solidário -->
+  <div class="bg-primary-container text-on-primary-container rounded-2xl p-6 flex flex-col gap-3">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+      <h2 class="font-headline-md text-headline-md font-bold">Compromisso Solidário</h2>
+    </div>
+    <ul class="flex flex-col gap-2">
+      <li class="flex items-start gap-2 font-body-md text-body-md">
+        <span class="material-symbols-outlined text-[18px] mt-0.5 shrink-0">check_circle</span>
+        Nenhuma taxa, nenhuma comissão e nenhuma transação financeira envolvida.
+      </li>
+      <li class="flex items-start gap-2 font-body-md text-body-md">
+        <span class="material-symbols-outlined text-[18px] mt-0.5 shrink-0">check_circle</span>
+        O DoaLink apenas aproxima doadores e pessoas com necessidade.
+      </li>
+      <li class="flex items-start gap-2 font-body-md text-body-md">
+        <span class="material-symbols-outlined text-[18px] mt-0.5 shrink-0">check_circle</span>
+        Você publica, o doador ajuda e o contato acontece direto entre as duas partes.
+      </li>
+    </ul>
+  </div>
+
+  <!-- Banner de segurança e moderação -->
+  <div class="bg-surface-container-low border border-outline-variant rounded-2xl p-6 flex items-start gap-3">
+    <span class="material-symbols-outlined text-on-surface-variant shrink-0">shield</span>
+    <p class="font-body-md text-body-md text-on-surface-variant">
+      Os dados publicados ficam visíveis no mural de pedidos. Não informe documentos, dados de cartão ou
+      informações sensíveis de terceiros. Pedidos com conteúdo inadequado são removidos pela moderação da
+      comunidade. A interação acontece por contato direto entre as partes envolvidas.
+    </p>
+  </div>
+</main>
+
+<footer class="bg-surface-container-lowest border-t border-outline-variant w-full mt-auto">
+  <div class="flex flex-col md:flex-row justify-between items-center w-full px-4 md:px-6 py-8 max-w-7xl mx-auto gap-4">
+    <span class="font-body-md text-body-md text-on-surface-variant text-center md:text-left">
+      © 2026 DoaLink. Desenvolvido por VICTOR,Miguel ; ANGELO,Nicolas ; PINTO,Stanley ; MORAES,Daniel.
+    </span>
+  </div>
+</footer>

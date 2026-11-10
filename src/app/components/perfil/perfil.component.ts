@@ -29,7 +29,7 @@ export class PerfilComponent implements OnInit {
   }
 
   editarPerfil(): void {
-    this.router.navigate(['/login']);
+    alert('Funcionalidade de edição de perfil ainda não disponível.');
   }
 
   editarDoacao(idItem: number): void {

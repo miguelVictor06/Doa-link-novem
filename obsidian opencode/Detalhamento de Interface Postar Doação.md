@@ -1,4 +1,4 @@
-
+[[Principal]]
 **Objetivo da IA:** O código HTML e CSS da interface de cadastro de doações já está definido, incluindo um *Drop Zone* para imagens. Sua tarefa é gerar **exclusivamente o script TypeScript (`.ts`) do componente Angular**, implementando a lógica de captura do arquivo, validação dos campos e envio dos dados para o back-end, mantendo as regras de código limpo. 
 
 ## 1. Gerenciamento de Formulário (Reactive Forms) * Utilize `FormGroup` e `FormBuilder` para gerenciar os inputs de texto (`itemName`, `condition`, `phone`, `description`). * **Regras de Validação:** Todos os campos devem ser obrigatórios (`Validators.required`). O campo de telefone deve prever uma validação básica de tamanho/formato. * Crie uma variável de classe (ex: `arquivoFoto: File | null = null`) para armazenar fisicamente a imagem selecionada pelo usuário antes do envio. 

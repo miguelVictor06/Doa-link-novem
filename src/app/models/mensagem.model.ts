@@ -9,12 +9,11 @@ export interface Mensagem {
   id_remetente: number;
   id_destinatario: number;
   texto: string;
-  lida: number;
+  lida: boolean;
   criado_em: string;
 }
 
 export interface MensagemPayload {
-  id_remetente: number;
   id_destinatario: number;
   texto: string;
 }

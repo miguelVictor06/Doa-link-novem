@@ -2,8 +2,11 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgTemplateOutlet } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { interval } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { MensagemService } from '../../services/mensagem.service';
+
+const INTERVALO_NAO_LIDAS_MS = 3000;
 
 interface ItemNavegacao {
   rota: string;
@@ -29,12 +32,15 @@ export class SidebarComponent {
   public readonly naoLidas = this.mensagemService.naoLidas;
 
   private readonly urlAtual = signal(this.router.url);
+  private atualizandoNaoLidas = false;
 
   public readonly expandido = signal(false);
   public readonly menuAberto = signal(false);
 
   public readonly itensNavegacao: readonly ItemNavegacao[] = [
     { rota: '/hub', rotulo: 'Doações', icone: 'storefront', exata: true },
+    { rota: '/pedidos', rotulo: 'Pedidos', icone: 'volunteer_activism', exata: true },
+    { rota: '/pedidos/criar', rotulo: 'Criar Pedido', icone: 'note_add', exata: true },
     { rota: '/pesquisar', rotulo: 'Pesquisar', icone: 'search', exata: true },
     { rota: '/postar', rotulo: 'Postar Doação', icone: 'add_box', exata: false },
     { rota: '/mensagens', rotulo: 'Mensagens', icone: 'chat', exata: false },
@@ -52,6 +58,10 @@ export class SidebarComponent {
 
   constructor() {
     this.router.events.pipe(takeUntilDestroyed()).subscribe(evento => this.aoNavegar(evento));
+
+    interval(INTERVALO_NAO_LIDAS_MS)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.atualizarNaoLidasSeNecessario());
   }
 
   public expandirSidebar(): void {
@@ -75,10 +85,26 @@ export class SidebarComponent {
 
     this.urlAtual.set(evento.urlAfterRedirects);
     this.fecharMenu();
+
+    if (!this.authService.obterIdUsuario()) {
+      this.mensagemService.naoLidas.set(0);
+      return;
+    }
+
+    this.atualizarNaoLidasSeNecessario();
+  }
+
+  private atualizarNaoLidasSeNecessario(): void {
+    if (!this.visivel() || this.ehRotaMensagens(this.urlAtual()) || document.hidden) {
+      return;
+    }
+
     this.atualizarNaoLidas();
   }
 
   private atualizarNaoLidas(): void {
+    if (this.atualizandoNaoLidas) return;
+
     const idUsuario = this.authService.obterIdUsuario();
 
     if (!idUsuario) {
@@ -86,13 +112,24 @@ export class SidebarComponent {
       return;
     }
 
+    this.atualizandoNaoLidas = true;
+
     this.mensagemService.buscarMensagens(idUsuario).subscribe({
-      next: mensagens => this.mensagemService.recalcularNaoLidas(mensagens, idUsuario),
-      error: () => this.mensagemService.naoLidas.set(0)
+      next: mensagens => {
+        this.atualizandoNaoLidas = false;
+        this.mensagemService.recalcularNaoLidas(mensagens, idUsuario);
+      },
+      error: () => {
+        this.atualizandoNaoLidas = false;
+      }
     });
   }
 
   private ehRotaLogin(url: string): boolean {
     return url.startsWith('/login');
+  }
+
+  private ehRotaMensagens(url: string): boolean {
+    return url.startsWith('/mensagens');
   }
 }

@@ -1,5 +1,5 @@
 **Objetivo da IA:** 
-
+[[Principal]]
 O código HTML e CSS desta interface já foi construído. Sua tarefa é gerar **exclusivamente o script TypeScript (`.ts`) do componente Angular**, implementando a lógica de dupla função e a integração com os serviços, garantindo que não haja erros de compilação ou de lógica.
 ## 1. Gerenciamento de Estado (Toggle Mode) * A tela unifica Login e Cadastro. Crie uma variável de controle de estado (por exemplo, `isLoginMode: boolean = true` como padrão) para gerenciar qual visualização está ativa. * Crie um método limpo (ex: `alternarModo()`) para inverter esse estado. O HTML usará essa variável para renderizar dinamicamente os campos adicionais de cadastro (como Nome e Endereço) ou ocultá-los no modo Login. 
 

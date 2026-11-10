@@ -38,6 +38,12 @@ export class PesquisarComponent implements OnInit {
 
   public solicitarItem(idItem: number): void {
     this.mensagemErro.set('');
+    const idReceptor = this.authService.obterIdUsuario();
+
+    if (!idReceptor) {
+      this.mensagemErro.set('Você precisa estar logado para solicitar um item.');
+      return;
+    }
 
     this.doacaoService.solicitarItem(idItem).subscribe({
       next: () => this.removerDaLista(idItem),
