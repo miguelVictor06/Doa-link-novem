@@ -88,12 +88,18 @@ function criarPublicId(nomeOriginal, resourceType) {
     : `${sufixo}-${semExtensao}`;
 }
 
+
 function enviarParaCloudinary(buffer, opcoes) {
   const cliente = configurarCloudinary();
 
   return new Promise((resolver, rejeitar) => {
     const stream = cliente.uploader.upload_stream(opcoes, (erro, resultado) => {
       if (erro) {
+        console.error('[CLOUDINARY UPLOAD]', {
+          message: erro.message,
+          http_code: erro.http_code
+        });
+
         const falha = new Error('Não foi possível enviar a imagem para o Cloudinary.');
         falha.status = 502;
         falha.causa = erro;
@@ -106,6 +112,7 @@ function enviarParaCloudinary(buffer, opcoes) {
     stream.end(buffer);
   });
 }
+
 
 async function enviarArquivo({ arquivo, nomeOriginal, permitirNaoImagem = false }) {
   const { mime, resourceType } = validarImagem(arquivo, permitirNaoImagem);
