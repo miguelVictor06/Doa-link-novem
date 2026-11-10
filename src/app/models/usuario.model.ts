@@ -14,6 +14,12 @@ export interface LoginPayload {
   senha: string;
 }
 
+export interface AtualizarPerfilPayload {
+  nome: string;
+  email: string;
+  endereco: string;
+}
+
 export interface CadastroPayload {
   nome: string;
   email: string;

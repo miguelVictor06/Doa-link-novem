@@ -2,7 +2,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, catchError, finalize, firstValueFrom, of, tap, timeout } from 'rxjs';
-import { LoginPayload, CadastroPayload, Usuario } from '../models/usuario.model';
+import { LoginPayload, CadastroPayload, AtualizarPerfilPayload, Usuario } from '../models/usuario.model';
 import { obterApiUrl } from '../config/api-config';
 
 @Injectable({
@@ -29,6 +29,12 @@ export class AuthService {
 
   cadastrar(dados: CadastroPayload): Observable<Usuario> {
     return this.http.post<Usuario>(`${this.apiUrl}/auth/cadastrar`, dados).pipe(
+      tap(usuario => this.usuarioAtualSignal.set(usuario))
+    );
+  }
+
+  atualizarPerfil(idUsuario: number, dados: AtualizarPerfilPayload): Observable<Usuario> {
+    return this.http.put<Usuario>(`${this.apiUrl}/usuarios/${idUsuario}`, dados).pipe(
       tap(usuario => this.usuarioAtualSignal.set(usuario))
     );
   }

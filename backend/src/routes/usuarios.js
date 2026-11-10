@@ -1,11 +1,93 @@
 const express = require('express');
 const router = express.Router();
 
-const { consultar } = require('../database');
+const { consultar, transacao } = require('../database');
 const { autenticar } = require('../middleware/auth');
 const { usuarioPublico, serializarDoacao } = require('../serializadores');
+const { registrarAtividade } = require('../services/atividade');
+const { normalizarEmail } = require('../dominio-documento');
+
+const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 router.use(autenticar);
+
+router.put('/:id', async (req, res, next) => {
+  try {
+    const id = paraIdPositivo(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({ erro: 'Usuário inválido.' });
+    }
+
+    if (id !== req.usuario.id_usuario) {
+      return res.status(403).json({ erro: 'Você só pode editar o seu próprio perfil.' });
+    }
+
+    const dados = req.body || {};
+    const nome = String(dados.nome || '').trim();
+    const endereco = String(dados.endereco || '').trim();
+    const email = normalizarEmail(dados.email);
+
+    if (!nome || !endereco || !email) {
+      return res.status(400).json({ erro: 'Nome, email e endereço são obrigatórios.' });
+    }
+
+    if (nome.length > 120) {
+      return res.status(400).json({ erro: 'O nome deve ter no máximo 120 caracteres.' });
+    }
+
+    if (endereco.length > 200) {
+      return res.status(400).json({ erro: 'O endereço deve ter no máximo 200 caracteres.' });
+    }
+
+    if (!EMAIL_VALIDO.test(email)) {
+      return res.status(400).json({ erro: 'Email inválido.' });
+    }
+
+    const emailEmUso = await consultar(
+      `SELECT id_usuario
+       FROM usuario
+       WHERE lower(email) = $1
+         AND id_usuario <> $2
+       LIMIT 1`,
+      [email, id]
+    );
+
+    if (emailEmUso.rowCount > 0) {
+      return res.status(409).json({ erro: 'Email já cadastrado.' });
+    }
+
+    const atualizado = await transacao(async (cliente) => {
+      const resultado = await cliente.query(
+        `UPDATE usuario
+         SET nome = $1, email = $2, endereco = $3
+         WHERE id_usuario = $4
+         RETURNING id_usuario, nome, email, endereco, tipo, cpf, cnpj, criado_em`,
+        [nome, email, endereco, id]
+      );
+
+      if (resultado.rowCount === 0) {
+        const erro = new Error('Usuário não encontrado.');
+        erro.status = 404;
+        throw erro;
+      }
+
+      await registrarAtividade(cliente, {
+        idUsuario: id,
+        tipo: 'usuario_atualizado',
+        entidade: 'usuario',
+        entidadeId: id,
+        detalhes: { campos: ['nome', 'email', 'endereco'] }
+      });
+
+      return resultado.rows[0];
+    });
+
+    res.json(usuarioPublico(atualizado, true));
+  } catch (erro) {
+    next(erro);
+  }
+});
 
 router.get('/', async (req, res, next) => {
   try {
