@@ -133,12 +133,12 @@ router.post('/', upload.single('foto'), async (req, res, next) => {
 router.put('/:id/solicitar', async (req, res, next) => {
   try {
     const doacao = await transacao(async (cliente) => {
-      const bloqueada = await cliente.query(
-        'SELECT * FROM item_doacao WHERE id_item = $1 FOR UPDATE',
+      const resultado = await cliente.query(
+        'SELECT * FROM item_doacao WHERE id_item = $1',
         [paraIdPositivo(req.params.id) || 0]
       );
 
-      const atual = bloqueada.rows[0];
+      const atual = resultado.rows[0];
 
       if (!atual) {
         const erro = new Error('Doação não encontrada.');
@@ -146,8 +146,8 @@ router.put('/:id/solicitar', async (req, res, next) => {
         throw erro;
       }
 
-      if (atual.status === 'Doado') {
-        const erro = new Error('Este item já foi doado.');
+      if (atual.status !== 'Disponivel') {
+        const erro = new Error('Este item não está mais disponível.');
         erro.status = 409;
         throw erro;
       }
@@ -158,20 +158,23 @@ router.put('/:id/solicitar', async (req, res, next) => {
         throw erro;
       }
 
-      await cliente.query(
-        `UPDATE item_doacao
-         SET status = 'Doado', id_receptor = $1
-         WHERE id_item = $2`,
-        [req.usuario.id_usuario, atual.id_item]
+      const solicitacao = await cliente.query(
+        `INSERT INTO solicitacao_doacao (id_item, id_interessado)
+         VALUES ($1, $2)
+         ON CONFLICT (id_item, id_interessado) DO NOTHING
+         RETURNING id_solicitacao`,
+        [atual.id_item, req.usuario.id_usuario]
       );
 
-      await registrarAtividade(cliente, {
-        idUsuario: req.usuario.id_usuario,
-        tipo: 'doacao_solicitada',
-        entidade: 'item_doacao',
-        entidadeId: atual.id_item,
-        detalhes: { id_doador: atual.id_doador }
-      });
+      if (solicitacao.rowCount > 0) {
+        await registrarAtividade(cliente, {
+          idUsuario: req.usuario.id_usuario,
+          tipo: 'doacao_solicitada',
+          entidade: 'item_doacao',
+          entidadeId: atual.id_item,
+          detalhes: { id_doador: atual.id_doador }
+        });
+      }
 
       return buscarDoacaoComCliente(cliente, atual.id_item);
     });

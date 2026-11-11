@@ -1,14 +1,14 @@
 <!-- Main Content -->
 <main class="flex-grow flex flex-col items-center py-8 px-4 md:px-6 max-w-7xl mx-auto w-full gap-8">
-  @if (mensagemSucesso) {
+  @if (mensagemSucesso()) {
     <div class="bg-secondary-container text-on-secondary-container p-4 rounded-lg text-center w-full max-w-4xl">
-      {{ mensagemSucesso }}
+      {{ mensagemSucesso() }}
     </div>
   }
 
-  @if (mensagemErro) {
+  @if (mensagemErro()) {
     <div class="bg-error-container text-on-error-container p-4 rounded-lg text-center w-full max-w-4xl">
-      {{ mensagemErro }}
+      {{ mensagemErro() }}
     </div>
   }
 
@@ -18,18 +18,18 @@
       <span class="material-symbols-outlined text-[64px] md:text-[80px] text-on-surface-variant">person</span>
     </div>
     <div class="flex flex-col flex-grow items-center md:items-start text-center md:text-left">
-      <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">{{ usuarioLogado?.nome ?? 'Usuário' }}</h1>
+      <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">{{ usuarioLogado()?.nome ?? 'Usuário' }}</h1>
       <div class="flex flex-col gap-2 mb-6">
         <div class="flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
           <span class="material-symbols-outlined text-[18px]">location_on</span>
-          <span>{{ usuarioLogado?.endereco ?? 'Endereço não informado' }}</span>
+          <span>{{ usuarioLogado()?.endereco ?? 'Endereço não informado' }}</span>
         </div>
         <div class="flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
           <span class="material-symbols-outlined text-[18px]">calendar_today</span>
-          <span>{{ usuarioLogado?.email ?? 'Email não informado' }}</span>
+          <span>{{ usuarioLogado()?.email ?? 'Email não informado' }}</span>
         </div>
       </div>
-      @if (!modoEdicao) {
+      @if (!modoEdicao()) {
         <button (click)="iniciarEdicaoPerfil()" class="bg-primary text-on-primary font-label-md text-label-md px-6 py-2 rounded-full flex items-center gap-2 hover:bg-primary-container transition-colors min-h-[40px]">
           <span class="material-symbols-outlined text-[18px]">edit</span>
           Editar perfil
@@ -38,7 +38,7 @@
     </div>
   </section>
 
-  @if (modoEdicao) {
+  @if (modoEdicao()) {
     <section class="bg-surface-container-lowest border border-outline-variant rounded-xl w-full max-w-4xl p-6 md:p-8">
       <h2 class="font-headline-md text-headline-md text-on-surface mb-6">Editar perfil</h2>
       <form [formGroup]="formularioPerfil" (ngSubmit)="salvarPerfil()" class="flex flex-col gap-5">
@@ -73,8 +73,8 @@
           <button type="button" (click)="cancelarEdicaoPerfil()" class="px-6 py-2 rounded-full border border-outline-variant font-label-md text-label-md text-on-surface hover:bg-surface-container transition-colors min-h-[40px]">
             Cancelar
           </button>
-          <button type="submit" [disabled]="salvandoPerfil" class="bg-primary text-on-primary font-label-md text-label-md px-6 py-2 rounded-full hover:bg-primary-container transition-colors min-h-[40px] disabled:opacity-60 disabled:cursor-not-allowed">
-            {{ salvandoPerfil ? 'Salvando...' : 'Salvar' }}
+          <button type="submit" [disabled]="salvandoPerfil()" class="bg-primary text-on-primary font-label-md text-label-md px-6 py-2 rounded-full hover:bg-primary-container transition-colors min-h-[40px] disabled:opacity-60 disabled:cursor-not-allowed">
+            {{ salvandoPerfil() ? 'Salvando...' : 'Salvar' }}
           </button>
         </div>
       </form>
@@ -85,7 +85,7 @@
   <section class="w-full max-w-7xl">
     <h2 class="font-headline-md text-headline-md text-on-surface mb-6 border-b border-surface-variant pb-2">Minhas Doações</h2>
 
-    @if (isLoading) {
+    @if (isLoading()) {
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @for (i of [1, 2, 3]; track i) {
           <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col">
@@ -98,7 +98,7 @@
         }
       </div>
     } @else {
-      @if (minhasDoacoes.length === 0) {
+      @if (minhasDoacoes().length === 0) {
         <div class="flex flex-col items-center justify-center py-16 text-center">
           <span class="material-symbols-outlined text-[64px] text-outline mb-4">inventory_2</span>
           <h3 class="font-headline-md text-headline-md text-on-surface mb-2">Nenhuma doação ainda</h3>
@@ -106,7 +106,7 @@
         </div>
       } @else {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          @for (doacao of minhasDoacoes; track doacao.id_item) {
+          @for (doacao of minhasDoacoes(); track doacao.id_item) {
             <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden hover:shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-shadow duration-200 flex flex-col group">
               <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low border-b border-outline-variant flex items-center justify-center">
                 @if (doacao.foto) {
@@ -126,10 +126,10 @@
                 <h3 class="font-label-md text-label-md text-on-surface mb-1 truncate">{{ doacao.titulo }}</h3>
                 <p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2">{{ doacao.descricao }}</p>
                 <div class="mt-auto flex justify-end gap-2 border-t border-surface-variant pt-3">
-                  <button (click)="editarDoacao(doacao.id_item)" class="text-on-surface-variant hover:text-primary transition-colors p-1" title="Edit">
+                  <button type="button" (click)="editarDoacao(doacao.id_item)" class="text-on-surface-variant hover:text-primary transition-colors p-1" title="Editar doação" aria-label="Editar doação">
                     <span class="material-symbols-outlined">edit</span>
                   </button>
-                  <button (click)="excluirDoacao(doacao.id_item)" class="text-on-surface-variant hover:text-error transition-colors p-1" title="Delete">
+                  <button type="button" (click)="excluirDoacao(doacao.id_item)" class="text-on-surface-variant hover:text-error transition-colors p-1" title="Encerrar doação" aria-label="Encerrar doação">
                     <span class="material-symbols-outlined">delete</span>
                   </button>
                 </div>

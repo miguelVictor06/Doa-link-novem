@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { validarCPF } from '../../utils/cpf-validator';
 
@@ -14,6 +14,8 @@ export class LoginComponent {
   formularioLogin: FormGroup;
   formularioCadastro: FormGroup;
   mensagemErro = '';
+
+  private readonly returnUrl: string | null;
 
   private readonly validarCpf = (controle: AbstractControl): ValidationErrors | null => {
     const valor = controle.value;
@@ -54,12 +56,20 @@ export class LoginComponent {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly rotaAtiva: ActivatedRoute
   ) {
     this.formularioLogin = this.criarFormularioLogin();
     this.formularioCadastro = this.criarFormularioCadastro();
     this.observarMudancaDeTipo();
     this.observarMudancaDeTipoContaCadastro();
+
+    this.returnUrl = this.normalizarReturnUrl(this.rotaAtiva.snapshot.queryParamMap.get('returnUrl'));
+
+    if (this.rotaAtiva.snapshot.queryParamMap.get('sessao') === 'indisponivel') {
+      this.mensagemErro =
+        'Não foi possível confirmar sua sessão com o servidor. Verifique sua conexão e tente novamente.';
+    }
   }
 
   onSubmitLogin(): void {
@@ -88,7 +98,7 @@ export class LoginComponent {
     const dados = this.extrairDadosLogin();
 
     this.authService.login(dados).subscribe({
-      next: () => this.router.navigate(['/hub']),
+      next: () => this.navegarAposAutenticacao(),
       error: (erro) => {
         console.error('Erro no login:', erro);
         this.mensagemErro = erro?.error?.erro ?? 'Falha ao realizar login. Verifique suas credenciais.';
@@ -100,12 +110,24 @@ export class LoginComponent {
     const dados = this.extrairDadosCadastro();
 
     this.authService.cadastrar(dados).subscribe({
-      next: () => this.router.navigate(['/hub']),
+      next: () => this.navegarAposAutenticacao(),
       error: (erro) => {
         console.error('Erro no cadastro:', erro);
         this.mensagemErro = erro?.error?.erro ?? 'Falha ao cadastrar. Tente novamente.';
       }
     });
+  }
+
+  private navegarAposAutenticacao(): void {
+    this.router.navigateByUrl(this.returnUrl ?? '/hub');
+  }
+
+  private normalizarReturnUrl(valor: string | null): string | null {
+    if (!valor || !valor.startsWith('/') || valor.startsWith('//') || valor.startsWith('/login')) {
+      return null;
+    }
+
+    return valor;
   }
 
   private criarFormularioLogin(): FormGroup {

@@ -8,21 +8,35 @@ function hashToken(token) {
   return crypto.createHash('sha256').update(token).digest('hex');
 }
 
-function opcoesCookie() {
-  const producao = process.env.NODE_ENV === 'production';
+function requisicaoSegura(req) {
+  if (req?.secure) {
+    return true;
+  }
+
+  const protocoloEncaminhado = req?.get?.('x-forwarded-proto');
+
+  if (typeof protocoloEncaminhado === 'string') {
+    return protocoloEncaminhado.split(',')[0].trim() === 'https';
+  }
+
+  return process.env.NODE_ENV === 'production';
+}
+
+function opcoesCookie(req) {
+  const seguro = requisicaoSegura(req);
 
   return {
     httpOnly: true,
-    secure: producao,
-    sameSite: producao ? 'none' : 'lax',
+    secure: seguro,
+    sameSite: seguro ? 'none' : 'lax',
     path: '/',
     maxAge: TTL_HORAS * 60 * 60 * 1000,
     domain: process.env.SESSION_COOKIE_DOMAIN || undefined
   };
 }
 
-function opcoesLimpezaCookie() {
-  const { maxAge, ...opcoes } = opcoesCookie();
+function opcoesLimpezaCookie(req) {
+  const { maxAge, ...opcoes } = opcoesCookie(req);
   return opcoes;
 }
 
@@ -37,7 +51,7 @@ async function criarSessao(req, res, usuario) {
     [tokenHash, usuario.id_usuario, expiraEm, req.get('user-agent') || null, req.ip || null]
   );
 
-  res.cookie(NOME_COOKIE, token, opcoesCookie());
+  res.cookie(NOME_COOKIE, token, opcoesCookie(req));
 }
 
 async function autenticar(req, res, next) {
@@ -69,7 +83,7 @@ async function autenticar(req, res, next) {
 
     if (resultado.rowCount === 0) {
       await consultar('DELETE FROM sessao WHERE token_hash = $1', [tokenHash]);
-      res.clearCookie(NOME_COOKIE, opcoesLimpezaCookie());
+      res.clearCookie(NOME_COOKIE, opcoesLimpezaCookie(req));
       return res.status(401).json({ erro: 'Sessão expirada. Faça login novamente.' });
     }
 
@@ -98,7 +112,7 @@ async function encerrarSessao(req, res) {
     await consultar('DELETE FROM sessao WHERE token_hash = $1', [hashToken(token)]);
   }
 
-  res.clearCookie(NOME_COOKIE, opcoesLimpezaCookie());
+  res.clearCookie(NOME_COOKIE, opcoesLimpezaCookie(req));
 }
 
 module.exports = {

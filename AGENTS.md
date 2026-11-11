@@ -33,7 +33,7 @@ DoaLink: donation marketplace prototype. Two separate packages: Angular 21 app a
 - Root-level `index.html`, `login.html`, `perfil.html`, `posts.html`/`posts.js`, `sobre.html`, `index.js` are legacy static prototypes (Tailwind CDN era). They are dead code — the real SPA shell is `src/index.html`. Don't edit them by mistake.
 - Backend DB is PostgreSQL/Neon. `backend/doalink.db` is now only the SQLite source for `npm run migrate`; do not edit or delete it before confirming the backup.
 - Schema lives in `backend/migrations/*.sql` and is applied by `backend/src/database/migrator.js`. `backend/doalink.db` is migrated with IDs preserved; images referenced by `/uploads/` are uploaded to Cloudinary and only metadata remains in PostgreSQL (`arquivo`).
-- Auth uses bcrypt and opaque HttpOnly session cookies stored in PostgreSQL (`sessao`); frontend has no localStorage session. `authGuard` still checks presence. Routes `/hub`, `/perfil`, `/postar` require login; everything else redirects to `/login`.
+- Auth uses bcrypt and opaque HttpOnly session cookies stored in PostgreSQL (`sessao`). The frontend keeps only a non-authoritative user cache in localStorage (`usuario_doalink`) to render the UI during session revalidation; the cookie is the source of truth. `authGuard` awaits `AuthService.restaurarSessao()` when the state is unknown. Routes `/hub`, `/perfil`, `/postar` require login; everything else redirects to `/login`.
 - Seeded test accounts: `mariana@email.com`, `joao@email.com`, `ana@email.com` — all password `123456`.
 
 ## Structure & conventions

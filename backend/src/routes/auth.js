@@ -2,6 +2,11 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 
+router.use((_req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
+
 const { consultar, transacao } = require('../database');
 const { criarSessao, autenticar, encerrarSessao } = require('../middleware/auth');
 const { limitadorAutenticacao } = require('../middleware/rateLimit');

@@ -39,6 +39,7 @@ app.use(helmet({
 
 const ORIGENS_FRONTEND = [
   'https://doa-link-novem.onrender.com',
+  'https://doalink-frontend.onrender.com',
   'http://localhost:4200',
   'http://localhost:4201'
 ];

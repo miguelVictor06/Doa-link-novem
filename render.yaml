@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: doalink-backend
+    name: doalink-backend-7q4s
     runtime: node
     rootDir: backend
     plan: free
@@ -19,9 +19,9 @@ services:
       - key: PGSSL_REJECT_UNAUTHORIZED
         value: "true"
       - key: CORS_ORIGINS
-        value: https://doalink-frontend.onrender.com
+        value: https://doa-link-novem.onrender.com
       - key: PUBLIC_API_URL
-        value: https://doalink-backend.onrender.com
+        value: https://doalink-backend-7q4s.onrender.com
       - key: SESSION_COOKIE_NAME
         value: doalink_sessao
       - key: SESSION_TTL_HOURS
@@ -42,7 +42,7 @@ services:
         value: doalink
 
   - type: web
-    name: doalink-frontend
+    name: doa-link-novem
     runtime: static
     buildCommand: npm ci && npm run build
     staticPublishPath: dist/doalink/browser
@@ -50,7 +50,11 @@ services:
       - key: NODE_VERSION
         value: "22"
       - key: API_URL
-        value: https://doalink-backend.onrender.com/api
+        value: https://doalink-backend-7q4s.onrender.com/api
+    headers:
+      - path: /config.js
+        name: Cache-Control
+        value: no-cache
     routes:
       - type: rewrite
         source: /*

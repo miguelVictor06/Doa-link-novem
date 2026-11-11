@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -13,13 +13,13 @@ import { ItemDoacao } from '../../models/item-doacao.model';
   styleUrl: './perfil.component.css'
 })
 export class PerfilComponent implements OnInit {
-  usuarioLogado: Usuario | null = null;
-  minhasDoacoes: ItemDoacao[] = [];
-  isLoading = true;
-  modoEdicao = false;
-  salvandoPerfil = false;
-  mensagemErro = '';
-  mensagemSucesso = '';
+  usuarioLogado = signal<Usuario | null>(null);
+  minhasDoacoes = signal<ItemDoacao[]>([]);
+  isLoading = signal(true);
+  modoEdicao = signal(false);
+  salvandoPerfil = signal(false);
+  mensagemErro = signal('');
+  mensagemSucesso = signal('');
 
   readonly formularioPerfil: FormGroup;
 
@@ -37,29 +37,29 @@ export class PerfilComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.usuarioLogado = this.authService.obterUsuarioLogado();
+    this.usuarioLogado.set(this.authService.obterUsuarioLogado());
     this.carregarHistorico();
   }
 
   iniciarEdicaoPerfil(): void {
-    this.mensagemErro = '';
-    this.mensagemSucesso = '';
+    this.mensagemErro.set('');
+    this.mensagemSucesso.set('');
     this.formularioPerfil.reset({
-      nome: this.usuarioLogado?.nome ?? '',
-      email: this.usuarioLogado?.email ?? '',
-      endereco: this.usuarioLogado?.endereco ?? ''
+      nome: this.usuarioLogado()?.nome ?? '',
+      email: this.usuarioLogado()?.email ?? '',
+      endereco: this.usuarioLogado()?.endereco ?? ''
     });
-    this.modoEdicao = true;
+    this.modoEdicao.set(true);
   }
 
   cancelarEdicaoPerfil(): void {
-    this.modoEdicao = false;
+    this.modoEdicao.set(false);
     this.formularioPerfil.reset();
   }
 
   salvarPerfil(): void {
-    this.mensagemErro = '';
-    this.mensagemSucesso = '';
+    this.mensagemErro.set('');
+    this.mensagemSucesso.set('');
 
     if (this.formularioPerfil.invalid) {
       this.formularioPerfil.markAllAsTouched();
@@ -69,11 +69,11 @@ export class PerfilComponent implements OnInit {
     const idUsuario = this.authService.obterIdUsuario();
 
     if (!idUsuario) {
-      this.mensagemErro = 'Usuário não identificado.';
+      this.mensagemErro.set('Usuário não identificado.');
       return;
     }
 
-    this.salvandoPerfil = true;
+    this.salvandoPerfil.set(true);
 
     this.authService.atualizarPerfil(idUsuario, {
       nome: String(this.formularioPerfil.value.nome).trim(),
@@ -81,15 +81,15 @@ export class PerfilComponent implements OnInit {
       endereco: String(this.formularioPerfil.value.endereco).trim()
     }).subscribe({
       next: (usuario) => {
-        this.usuarioLogado = usuario;
-        this.modoEdicao = false;
-        this.salvandoPerfil = false;
-        this.mensagemSucesso = 'Perfil atualizado com sucesso.';
+        this.usuarioLogado.set(usuario);
+        this.modoEdicao.set(false);
+        this.salvandoPerfil.set(false);
+        this.mensagemSucesso.set('Perfil atualizado com sucesso.');
       },
       error: (erro) => {
         console.error('Erro ao atualizar perfil:', erro);
-        this.salvandoPerfil = false;
-        this.mensagemErro = erro?.error?.erro ?? 'Não foi possível atualizar o perfil.';
+        this.salvandoPerfil.set(false);
+        this.mensagemErro.set(erro?.error?.erro ?? 'Não foi possível atualizar o perfil.');
       }
     });
   }
@@ -110,41 +110,53 @@ export class PerfilComponent implements OnInit {
   }
 
   excluirDoacao(idItem: number): void {
-    this.mensagemErro = '';
+    this.mensagemErro.set('');
+    this.mensagemSucesso.set('');
+
+    const confirmado = window.confirm(
+      'Tem certeza de que deseja encerrar esta doação? Ela será removida do Hub e não poderá ser recuperada.'
+    );
+
+    if (!confirmado) {
+      return;
+    }
 
     this.doacaoService.excluirDoacao(idItem).subscribe({
-      next: () => this.removerItemDaLista(idItem),
+      next: () => {
+        this.removerItemDaLista(idItem);
+        this.mensagemSucesso.set('Doação encerrada com sucesso.');
+      },
       error: (erro) => {
         console.error('Erro ao excluir doação:', erro);
-        this.mensagemErro = 'Não foi possível excluir a doação.';
+        this.mensagemErro.set(erro?.error?.erro ?? 'Não foi possível encerrar a doação.');
       }
     });
   }
 
   private carregarHistorico(): void {
-    this.isLoading = true;
+    this.isLoading.set(true);
     const idUsuario = this.authService.obterIdUsuario();
 
     if (!idUsuario) {
-      this.mensagemErro = 'Usuário não identificado.';
-      this.isLoading = false;
+      this.mensagemErro.set('Usuário não identificado.');
+      this.isLoading.set(false);
       return;
     }
 
     this.doacaoService.buscarHistoricoUsuario(idUsuario).subscribe({
       next: (itens) => {
-        this.minhasDoacoes = itens;
-        this.isLoading = false;
+        this.minhasDoacoes.set(itens);
+        this.isLoading.set(false);
       },
       error: (erro) => {
         console.error('Erro ao buscar histórico:', erro);
-        this.mensagemErro = 'Não foi possível carregar o histórico.';
-        this.isLoading = false;
+        this.mensagemErro.set('Não foi possível carregar o histórico.');
+        this.isLoading.set(false);
       }
     });
   }
 
   private removerItemDaLista(idItem: number): void {
-    this.minhasDoacoes = this.minhasDoacoes.filter(item => item.id_item !== idItem);
+    this.minhasDoacoes.update(itens => itens.filter(item => item.id_item !== idItem));
   }
 }

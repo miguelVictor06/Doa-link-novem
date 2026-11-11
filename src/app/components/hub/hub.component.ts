@@ -14,6 +14,7 @@ export class HubComponent implements OnInit {
   doacoesDisponiveis = signal<ItemDoacao[]>([]);
   isLoading = signal(true);
   mensagemErro = signal('');
+  mensagemSucesso = signal('');
 
   constructor(
     private readonly doacaoService: DoacaoService,
@@ -31,6 +32,7 @@ export class HubComponent implements OnInit {
 
   solicitarItem(idItem: number): void {
     this.mensagemErro.set('');
+    this.mensagemSucesso.set('');
     const idReceptor = this.authService.obterIdUsuario();
 
     if (!idReceptor) {
@@ -40,12 +42,13 @@ export class HubComponent implements OnInit {
 
     this.doacaoService.solicitarItem(idItem).subscribe({
       next: () => {
-        this.doacoesDisponiveis.update(itens => itens.filter(item => item.id_item !== idItem));
-        alert('Solicitação realizada com sucesso!');
+        this.mensagemSucesso.set('Solicitação registrada! O item continua disponível para outras pessoas.');
       },
       error: (erro) => {
         console.error('Erro ao solicitar item:', erro);
-        this.mensagemErro.set('Não foi possível solicitar este item. Tente novamente.');
+        this.mensagemErro.set(
+          erro?.error?.erro ?? 'Não foi possível solicitar este item. Tente novamente.'
+        );
       }
     });
   }
@@ -53,6 +56,7 @@ export class HubComponent implements OnInit {
   private carregarDoacoes(): void {
     this.isLoading.set(true);
     this.mensagemErro.set('');
+    this.mensagemSucesso.set('');
 
     this.doacaoService.buscarDoacoesDisponiveis().subscribe({
       next: (itens) => {

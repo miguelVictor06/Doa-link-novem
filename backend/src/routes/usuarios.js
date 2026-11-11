@@ -145,7 +145,14 @@ router.get('/:id/historico', async (req, res, next) => {
       `SELECT d.*, u.nome AS nome_doador, u.endereco AS endereco_doador
        FROM item_doacao d
        JOIN usuario u ON u.id_usuario = d.id_doador
-       WHERE d.id_doador = $1 OR d.id_receptor = $1
+       WHERE d.id_doador = $1
+          OR d.id_receptor = $1
+          OR EXISTS (
+            SELECT 1
+            FROM solicitacao_doacao s
+            WHERE s.id_item = d.id_item
+              AND s.id_interessado = $1
+          )
        ORDER BY d.criado_em DESC`,
       [id]
     );

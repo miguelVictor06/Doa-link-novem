@@ -16,6 +16,7 @@ export class PesquisarComponent implements OnInit {
   public readonly termoPesquisa = signal('');
   public readonly isLoading = signal(true);
   public readonly mensagemErro = signal('');
+  public readonly mensagemSucesso = signal('');
 
   public readonly doacoesDisponiveis = signal<readonly ItemDoacao[]>([]);
 
@@ -38,6 +39,7 @@ export class PesquisarComponent implements OnInit {
 
   public solicitarItem(idItem: number): void {
     this.mensagemErro.set('');
+    this.mensagemSucesso.set('');
     const idReceptor = this.authService.obterIdUsuario();
 
     if (!idReceptor) {
@@ -46,13 +48,22 @@ export class PesquisarComponent implements OnInit {
     }
 
     this.doacaoService.solicitarItem(idItem).subscribe({
-      next: () => this.removerDaLista(idItem),
-      error: () => this.mensagemErro.set('Não foi possível solicitar este item. Tente novamente.')
+      next: () => {
+        this.mensagemSucesso.set('Solicitação registrada! O item continua disponível para outras pessoas.');
+      },
+      error: (erro) => {
+        console.error('Erro ao solicitar item:', erro);
+        this.mensagemErro.set(
+          erro?.error?.erro ?? 'Não foi possível solicitar este item. Tente novamente.'
+        );
+      }
     });
   }
 
   private carregarDoacoes(): void {
     this.isLoading.set(true);
+    this.mensagemErro.set('');
+    this.mensagemSucesso.set('');
 
     this.doacaoService.buscarDoacoesDisponiveis().subscribe({
       next: (itens) => {
@@ -92,9 +103,5 @@ export class PesquisarComponent implements OnInit {
     if (!termoNormalizado) return 'Nenhuma doação disponível no momento.';
 
     return `Nenhum resultado encontrado para "${termoNormalizado}".`;
-  }
-
-  private removerDaLista(idItem: number): void {
-    this.doacoesDisponiveis.update(itens => itens.filter(item => item.id_item !== idItem));
   }
 }
