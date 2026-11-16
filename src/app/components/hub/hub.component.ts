@@ -42,7 +42,12 @@ export class HubComponent implements OnInit {
 
     this.doacaoService.solicitarItem(idItem).subscribe({
       next: () => {
-        this.mensagemSucesso.set('Solicitação registrada! O item continua disponível para outras pessoas.');
+        const doacao = this.doacoesDisponiveis().find(item => item.id_item === idItem);
+        if (doacao) {
+          this.router.navigate(['/mensagens'], { queryParams: { com: doacao.id_doador } });
+          return;
+        }
+        this.mensagemSucesso.set('Solicita��ǜo registrada! O item continua dispon��vel para outras pessoas.');
       },
       error: (erro) => {
         console.error('Erro ao solicitar item:', erro);

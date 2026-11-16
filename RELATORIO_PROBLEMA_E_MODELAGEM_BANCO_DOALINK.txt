@@ -1,0 +1,259 @@
+========================================================================
+RELATÓRIO - PROBLEMA E MODELAGEM DO BANCO DE DADOS
+Projeto: DoaLink
+========================================================================
+
+Antes de escrever, analisei a pasta backend, as migrações SQL e as rotas da API. O banco
+usado hoje é o PostgreSQL, hospedado no Neon. Os arquivos de SQLite e MySQL são antigos:
+o SQLite foi o banco anterior e hoje serve só como fonte para a migração, e o MySQL foi
+planejado, mas não implementado.
+
+========================================================================
+1. PROBLEMA
+========================================================================
+
+O DoaLink é um site de doações que liga pessoas que têm produtos parados em casa com
+pessoas ou instituições que precisam desses produtos.
+
+Na doação informal, geralmente por WhatsApp ou redes sociais, a informação fica
+espalhada. Quem quer doar não sabe quem precisa, quem precisa não encontra o item com
+facilidade, as postagens se perdem e não existe um histórico confiável de quem ofereceu,
+quem pediu e quem recebeu. Também é comum a mesma pessoa divulgar o item em vários
+lugares, ou várias pessoas se interessarem pelo mesmo produto sem que o doador consiga
+organizar isso.
+
+O sistema resolve isso centralizando as doações em um só lugar. O usuário se cadastra,
+publica um item, vê os itens disponíveis no hub, demonstra interesse, cria pedidos de
+necessidade e conversa com outros usuários por mensagens. Como o projeto é de economia
+circular e solidariedade, não existe pagamento, carrinho de compras nem preço: o foco é
+só conectar quem doa com quem recebe.
+
+========================================================================
+2. SOLUÇÃO PROPOSTA
+========================================================================
+
+O frontend foi feito em Angular e é a interface que o usuário vê no navegador. O backend
+foi feito em Node.js com Express e expõe uma API REST, que conversa com o PostgreSQL, o
+banco de dados de verdade do projeto.
+
+O fluxo funciona assim:
+- o usuário se cadastra e faz login;
+- o backend guarda os dados do usuário e a senha protegida com bcrypt;
+- a sessão fica registrada no banco e é controlada por um cookie;
+- o usuário logado cadastra uma doação com título, descrição, condição, telefone e,
+  se quiser, uma foto;
+- a doação aparece no hub para os outros usuários, que podem solicitar o item;
+- o usuário também pode cadastrar um pedido de necessidade, informando o que precisa,
+  a categoria, a urgência e a quantidade;
+- outras pessoas podem ajudar nesse pedido, e cada ajuda é registrada;
+- os usuários podem trocar mensagens, e as ações importantes geram registro de atividade.
+
+O banco participa de tudo isso. Ele não guarda só texto: mantém o relacionamento entre
+usuários, itens, pedidos, solicitações, mensagens, sessões e arquivos. É o banco que
+garante que um item tenha um doador válido, que uma solicitação esteja ligada a um item e
+a um interessado, e que um pedido de necessidade tenha um solicitante.
+
+========================================================================
+3. MODELAGEM DO BANCO DE DADOS
+========================================================================
+
+A estrutura é criada pelas migrações da pasta backend/migrations, executadas pelo
+migrator.js. Cada migração aplicada fica registrada na tabela de controle migracao, para
+não ser executada duas vezes. As migrações são:
+
+- 001_schema_inicial.sql: cria a maior parte das tabelas;
+- 002_categorias.sql: insere as categorias iniciais;
+- 003_arquivo_cloudinary.sql: acrescenta os campos do Cloudinary;
+- 004_arquivo_somente_metadados.sql: ajusta arquivo para guardar só metadados e URL;
+- 005_solicitacoes_doacao.sql: cria solicitacao_doacao e ajusta o fluxo antigo.
+
+3.1 categoria
+- id_categoria (BIGSERIAL, PK); nome (TEXT, obrigatório e único).
+- Categorias inseridas: Alimentos, Móveis, Vestuário, Materiais Escolares, Saúde e Outros.
+
+3.2 usuario
+- id_usuario (BIGSERIAL, PK); nome, email e endereco (TEXT, obrigatórios; endereco tem
+  padrão vazio); tipo (TEXT, padrão 'Pessoal', só aceita 'Pessoal' ou 'Instituicao');
+  cpf e cnpj (TEXT, opcionais); criado_em e atualizado_em (TIMESTAMPTZ).
+- Índices únicos para lower(email), cpf e cnpj (quando preenchidos). Uma regra impede
+  CPF e CNPJ incompatíveis com o tipo do usuário.
+
+3.3 credencial
+- id_usuario (BIGINT, PK e FK para usuario, ON DELETE CASCADE); senha_hash (TEXT,
+  obrigatório); algoritmo (TEXT, padrão 'bcrypt'); atualizado_em (TIMESTAMPTZ).
+- Relação um para um: a credencial pertence a um único usuário.
+
+3.4 sessao
+- token_hash (TEXT, PK); id_usuario (BIGINT, obrigatório, FK para usuario, ON DELETE
+  CASCADE); criado_em, expira_em e ultimo_acesso_em (TIMESTAMPTZ); user_agent e ip.
+- O token não é guardado em texto puro: o banco guarda o hash.
+
+3.5 arquivo
+- id_arquivo (BIGSERIAL, PK); id_usuario (BIGINT, FK para usuario, ON DELETE SET NULL);
+  nome_original (TEXT), mime (TEXT) e tamanho (INTEGER), obrigatórios; criado_em;
+  url_segura (URL no Cloudinary); public_id; provedor (padrão 'cloudinary');
+  resource_type (padrão 'image', aceita 'image' ou 'raw').
+- A versão inicial tinha conteudo (binário) e url_externa. A migração 004 removeu
+  url_externa e removeu conteudo quando não havia binários. Hoje o arquivo fica no
+  Cloudinary e o banco guarda só os metadados e a URL.
+
+3.6 item_doacao
+- id_item (BIGSERIAL, PK); titulo e descricao (TEXT, obrigatórios); foto (TEXT, caminho
+  usado pela API); id_arquivo (BIGINT, FK para arquivo, ON DELETE SET NULL); condicao e
+  telefone (TEXT, opcionais); status (TEXT, padrão 'Disponivel', aceita 'Disponivel' ou
+  'Doado'); id_doador (BIGINT, obrigatório, FK para usuario, ON DELETE RESTRICT);
+  id_receptor (BIGINT, opcional, FK para usuario, ON DELETE SET NULL); criado_em e
+  atualizado_em.
+- status e id_receptor continuam no banco, mas o fluxo atual de solicitação não os
+  altera. Hoje o item continua disponível e os interessados ficam em solicitacao_doacao.
+
+3.7 pedido_necessidade
+- id_pedido (BIGSERIAL, PK); titulo (TEXT, obrigatório); categoria (TEXT, obrigatório,
+  FK para categoria(nome), ON UPDATE CASCADE); urgencia (TEXT, padrão 'Baixa', aceita
+  'Baixa', 'Média' ou 'Alta'); cidade (TEXT, obrigatório); estado (TEXT, padrão vazio,
+  quando preenchido precisa ter duas letras maiúsculas); descricao e telefone (TEXT,
+  obrigatórios); quantidade (INTEGER, padrão 1, maior que zero); quantidade_atendida
+  (INTEGER, padrão 0, não pode ser negativa nem passar do total); status (TEXT, padrão
+  'Aberto', aceita 'Aberto' ou 'Concluído'); id_solicitante (BIGINT, obrigatório, FK
+  para usuario, ON DELETE RESTRICT); criado_em e atualizado_em.
+- A FK de categoria aponta para categoria(nome), e não para id_categoria, porque a
+  migração original criou a tabela referenciando o nome, que é único.
+
+3.8 solicitacao_doacao
+- id_solicitacao (BIGSERIAL, PK); id_item (BIGINT, obrigatório, FK para item_doacao,
+  ON DELETE CASCADE); id_interessado (BIGINT, obrigatório, FK para usuario, ON DELETE
+  CASCADE); criado_em.
+- UNIQUE (id_item, id_interessado) impede o mesmo usuário de solicitar o mesmo item
+  duas vezes.
+
+3.9 mensagem
+- id_mensagem (BIGSERIAL, PK); id_remetente e id_destinatario (BIGINT, obrigatórios, FK
+  para usuario, ON DELETE CASCADE); texto (TEXT, obrigatório); lida (BOOLEAN, padrão
+  falso); lida_em (TIMESTAMPTZ, opcional); criado_em.
+- Uma regra do banco impede que remetente e destinatário sejam a mesma pessoa.
+
+3.10 interacao_ajuda
+- id_interacao (BIGSERIAL, PK); id_pedido (BIGINT, obrigatório, FK para
+  pedido_necessidade, ON DELETE CASCADE); id_usuario (BIGINT, obrigatório, FK para
+  usuario, ON DELETE CASCADE); quantidade (INTEGER, padrão 1, maior que zero); criado_em.
+- Permite que um pedido receba várias ajudas, de usuários diferentes, com a quantidade
+  de cada uma registrada.
+
+3.11 atividade
+- id_atividade (BIGSERIAL, PK); id_usuario (BIGINT, opcional, FK para usuario, ON DELETE
+  SET NULL); tipo (TEXT); entidade (TEXT); entidade_id (BIGINT, opcional); detalhes
+  (JSONB, padrão objeto vazio); criado_em.
+- entidade e entidade_id não são FK de verdade: guardam o nome e o id da entidade
+  alterada como referência lógica, usada no histórico de ações.
+
+3.12 migracao
+- id_migracao (TEXT, PK, nome do arquivo SQL); executada_em (TIMESTAMPTZ).
+- Não faz parte do fluxo de doações, mas o migrator.js consulta essa tabela para saber
+  quais migrações já foram aplicadas.
+
+3.13 DIFERENÇA ENTRE O PLANEJADO E O IMPLEMENTADO
+A documentação Modelagem_e_Backend.md descreve um planejamento com apenas Usuario e
+Item_Doacao e cita um backend Java. Os arquivos antigos schema.sql e schema.mysql.sql
+têm só usuario, item_doacao e mensagem, com a senha dentro de usuario. O que foi
+implementado é diferente e maior:
+- o backend real é Node.js com Express, não Java;
+- o banco real é PostgreSQL/Neon, não SQLite ou MySQL;
+- a senha saiu de usuario e foi para credencial, com hash bcrypt;
+- foram criadas tabelas para sessão, arquivos, categorias, pedidos de necessidade,
+  ajuda em pedidos, solicitações de doação e atividades;
+- no planejamento, solicitar um item mudaria o status para 'Doado' e preencheria
+  id_receptor. Na implementação, a solicitação é gravada em solicitacao_doacao e o item
+  continua 'Disponivel', permitindo vários interessados. A migração 005 desfaz o
+  comportamento antigo;
+- status e id_receptor continuam em item_doacao por causa da estrutura inicial e de
+  dados antigos, mas não são usados pelo fluxo atual de solicitação.
+
+O SQLite em backend/doalink.db é legado: foi o banco anterior e hoje é fonte para o
+script npm run migrate. O MySQL está só esboçado em mysql.js e schema.mysql.sql, e o
+próprio código informa que não foi implementado.
+
+========================================================================
+4. RELACIONAMENTOS
+========================================================================
+
+- usuario 1:N item_doacao por id_doador (FK obrigatória, ON DELETE RESTRICT): um usuário
+  tem várias doações, e cada item tem um único doador.
+- usuario 1:N item_doacao por id_receptor (opcional, ON DELETE SET NULL): um usuário pode
+  ser receptor de vários itens.
+- usuario 1:1 credencial: cada credencial pertence a um usuário e só existe ligada a ele.
+- usuario 1:N sessao: um usuário pode ter várias sessões abertas; se ele for apagado, as
+  sessões também são.
+- usuario 1:N arquivo: um usuário pode enviar vários arquivos; se ele for apagado, o
+  arquivo continua, mas perde a referência ao usuário.
+- item_doacao 1:0..1 arquivo: um item pode ter uma imagem por id_arquivo; se o arquivo
+  for removido, o campo do item fica nulo.
+- usuario 1:N solicitacao_doacao por id_interessado: um usuário pode se interessar por
+  vários itens.
+- item_doacao 1:N solicitacao_doacao: um item pode receber várias solicitações, mas a
+  combinação item + interessado é única.
+- usuario 1:N pedido_necessidade por id_solicitante: um usuário cria vários pedidos, e
+  cada pedido tem um único solicitante.
+- categoria 1:N pedido_necessidade: uma categoria pode estar em vários pedidos, ligada
+  pelo nome.
+- pedido_necessidade 1:N interacao_ajuda: um pedido recebe várias ajudas, e cada ajuda
+  pertence a um pedido.
+- usuario 1:N interacao_ajuda: um usuário pode ajudar em vários pedidos, e cada ajuda
+  registra quem ajudou e quanto.
+- usuario 1:N mensagem como remetente e também como destinatário: cada mensagem tem os
+  dois, e eles precisam ser usuários diferentes.
+- usuario 1:N atividade: um usuário pode ter várias atividades; se ele for apagado, a
+  atividade continua, mas sem o vínculo com ele.
+
+Essas relações fazem o sistema funcionar. Sem a FK de item_doacao para usuario, um item
+poderia ficar sem doador. Sem solicitacao_doacao, não saberíamos quem se interessou por
+cada item. Sem interacao_ajuda, não seria possível controlar quantas unidades cada pessoa
+ajudou. E sem credencial e sessao, o login e a segurança das rotas não funcionariam.
+
+Diagrama simplificado do modelo relacional:
+
+categoria
+   |
+   | 1:N (categoria.nome)
+   v
+pedido_necessidade ----< interacao_ajuda
+   ^
+   | N:1 (id_solicitante)
+   |
+usuario ----< item_doacao                  (id_doador)
+   |              |
+   |              +----< solicitacao_doacao
+   |              |
+   |              +----0..1 arquivo         (id_arquivo)
+   |
+   +----1:1 credencial
+   +----1:N sessao
+   +----1:N arquivo
+   +----1:N mensagem                      (remetente/destinatário)
+   +----1:N interacao_ajuda
+   +----1:N solicitacao_doacao            (id_interessado)
+   +----1:N atividade
+
+Legenda: 1:N = um para muitos; N:1 = muitos para um; 1:1 = um para um;
+0..1 = opcional; < = lado "muitos" da relação.
+
+O diagrama mostra os vínculos principais. usuario se liga a item_doacao em dois papéis
+(doador e receptor), e mensagem se liga duas vezes a usuario (remetente e destinatário).
+
+========================================================================
+5. CONCLUSÃO
+========================================================================
+
+O banco de dados é a base do DoaLink. É ele que mantém organizados usuários, doações,
+pedidos de necessidade, solicitações, mensagens e o histórico de ações. Sem ele, o site
+poderia mostrar telas, mas não teria como guardar quem doou o quê, quem pediu ajuda,
+quem demonstrou interesse ou quem conversou com quem.
+
+A modelagem também evita dados soltos e inconsistentes, porque as chaves estrangeiras e
+as restrições fazem o banco recusar situações inválidas. Comparar o planejamento com o
+código mostra que o projeto evoluiu: o banco passou de uma ideia simples com poucas
+tabelas para uma estrutura maior, com login, sessões, imagens no Cloudinary, pedidos de
+necessidade e registro de solicitações. Para o DoaLink, essa estrutura é o que permite
+que a doação deixe de ser uma conversa perdida e vire uma informação organizada e
+consultável.
+
+========================================================================
