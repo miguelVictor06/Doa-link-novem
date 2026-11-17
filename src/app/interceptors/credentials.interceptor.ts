@@ -9,8 +9,18 @@ const ROTAS_COM_TRATAMENTO_PROPRIO = ['/auth/login', '/auth/cadastrar', '/auth/m
 export const credentialsInterceptor: HttpInterceptorFn = (requisicao, proximo) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  const token = authService.obterToken();
 
-  return proximo(requisicao.clone({ withCredentials: true })).pipe(
+  const requisicaoAutenticada = token
+    ? requisicao.clone({
+        withCredentials: true,
+        setHeaders: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    : requisicao.clone({ withCredentials: true });
+
+  return proximo(requisicaoAutenticada).pipe(
     catchError((erro: unknown) => {
       const tratamentoProprio = ROTAS_COM_TRATAMENTO_PROPRIO.some(rota =>
         requisicao.url.includes(rota)
