@@ -1,7 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, finalize, firstValueFrom, tap, timeout } from 'rxjs';
+import { Observable, finalize, firstValueFrom, map, tap, timeout } from 'rxjs';
 import { LoginPayload, CadastroPayload, AtualizarPerfilPayload, Usuario } from '../models/usuario.model';
 import { obterApiUrl } from '../config/api-config';
 
@@ -12,8 +12,6 @@ const CHAVE_CACHE_USUARIO = 'usuario_doalink';
 const CHAVE_TOKEN_SESSAO = 'token_sessao_doalink';
 
 export type EstadoAutenticacao = 'desconhecido' | 'autenticado' | 'anonimo';
-
-type RespostaAutenticacao = Usuario & { token?: string };
 
 @Injectable({
   providedIn: 'root'
@@ -46,26 +44,16 @@ export class AuthService {
   ) {}
 
   login(dados: LoginPayload): Observable<Usuario> {
-    return this.http.post<RespostaAutenticacao>(`${this.apiUrl}/auth/login`, dados).pipe(
-      tap(resposta => {
-        if (typeof resposta.token === 'string' && resposta.token.trim()) {
-          this.gravarToken(resposta.token.trim());
-        }
-        const { token: _token, ...usuario } = resposta;
-        this.definirUsuario(usuario);
-      })
+    return this.http.post<Record<string, unknown>>(`${this.apiUrl}/auth/login`, dados).pipe(
+      map(resposta => this.extrairUsuarioESalvarToken(resposta)),
+      tap(usuario => this.definirUsuario(usuario))
     );
   }
 
   cadastrar(dados: CadastroPayload): Observable<Usuario> {
-    return this.http.post<RespostaAutenticacao>(`${this.apiUrl}/auth/cadastrar`, dados).pipe(
-      tap(resposta => {
-        if (typeof resposta.token === 'string' && resposta.token.trim()) {
-          this.gravarToken(resposta.token.trim());
-        }
-        const { token: _token, ...usuario } = resposta;
-        this.definirUsuario(usuario);
-      })
+    return this.http.post<Record<string, unknown>>(`${this.apiUrl}/auth/cadastrar`, dados).pipe(
+      map(resposta => this.extrairUsuarioESalvarToken(resposta)),
+      tap(usuario => this.definirUsuario(usuario))
     );
   }
 
@@ -125,6 +113,16 @@ export class AuthService {
 
   obterToken(): string | null {
     return this.tokenEmMemoria || this.lerTokenDoCache();
+  }
+
+  private extrairUsuarioESalvarToken(resposta: Record<string, unknown>): Usuario {
+    const tokenBruto = resposta['token'];
+    if (typeof tokenBruto === 'string' && tokenBruto.trim()) {
+      this.gravarToken(tokenBruto.trim());
+    }
+
+    const { token: _token, ...dadosUsuario } = resposta;
+    return dadosUsuario as unknown as Usuario;
   }
 
   private async executarRestauracao(): Promise<void> {
