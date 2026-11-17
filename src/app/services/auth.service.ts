@@ -9,8 +9,11 @@ const TEMPO_LIMITE_RESTAURACAO_MS = 8000;
 const TENTATIVAS_REVALIDACAO = 3;
 const ESPERA_BASE_REVALIDACAO_MS = 2000;
 const CHAVE_CACHE_USUARIO = 'usuario_doalink';
+const CHAVE_TOKEN_SESSAO = 'token_sessao_doalink';
 
 export type EstadoAutenticacao = 'desconhecido' | 'autenticado' | 'anonimo';
+
+type RespostaAutenticacao = Usuario & { token?: string };
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +22,8 @@ export class AuthService {
   private readonly apiUrl = obterApiUrl();
 
   private readonly usuarioAtualSignal = signal<Usuario | null>(this.lerUsuarioDoCache());
+
+  private tokenEmMemoria: string | null = this.lerTokenDoCache();
 
   private readonly estadoAutenticacaoSignal = signal<EstadoAutenticacao>(
     this.usuarioAtualSignal() ? 'autenticado' : 'desconhecido'
@@ -41,14 +46,26 @@ export class AuthService {
   ) {}
 
   login(dados: LoginPayload): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.apiUrl}/auth/login`, dados).pipe(
-      tap(usuario => this.definirUsuario(usuario))
+    return this.http.post<RespostaAutenticacao>(`${this.apiUrl}/auth/login`, dados).pipe(
+      tap(resposta => {
+        if (typeof resposta.token === 'string' && resposta.token.trim()) {
+          this.gravarToken(resposta.token.trim());
+        }
+        const { token: _token, ...usuario } = resposta;
+        this.definirUsuario(usuario);
+      })
     );
   }
 
   cadastrar(dados: CadastroPayload): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.apiUrl}/auth/cadastrar`, dados).pipe(
-      tap(usuario => this.definirUsuario(usuario))
+    return this.http.post<RespostaAutenticacao>(`${this.apiUrl}/auth/cadastrar`, dados).pipe(
+      tap(resposta => {
+        if (typeof resposta.token === 'string' && resposta.token.trim()) {
+          this.gravarToken(resposta.token.trim());
+        }
+        const { token: _token, ...usuario } = resposta;
+        this.definirUsuario(usuario);
+      })
     );
   }
 
@@ -104,6 +121,10 @@ export class AuthService {
 
   obterIdUsuario(): number | null {
     return this.usuarioAtualSignal()?.id_usuario ?? null;
+  }
+
+  obterToken(): string | null {
+    return this.tokenEmMemoria || this.lerTokenDoCache();
   }
 
   private async executarRestauracao(): Promise<void> {
@@ -196,6 +217,7 @@ export class AuthService {
     this.usuarioAtualSignal.set(null);
     this.erroRestauracaoSignal.set(null);
     this.removerUsuarioDoCache();
+    this.removerToken();
   }
 
   private ehNaoAutenticado(erro: unknown): boolean {
@@ -232,13 +254,40 @@ export class AuthService {
     try {
       localStorage.setItem(CHAVE_CACHE_USUARIO, JSON.stringify(usuario));
     } catch {
-      // Armazenamento indisponível (modo privado); a sessão continua válida no cookie.
+      // Armazenamento indisponível (modo privado); a sessão continua válida no cookie/memória.
     }
   }
 
   private removerUsuarioDoCache(): void {
     try {
       localStorage.removeItem(CHAVE_CACHE_USUARIO);
+    } catch {
+      // Ignora indisponibilidade do armazenamento.
+    }
+  }
+
+  private lerTokenDoCache(): string | null {
+    try {
+      const token = localStorage.getItem(CHAVE_TOKEN_SESSAO);
+      return token && token.trim() ? token.trim() : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private gravarToken(token: string): void {
+    this.tokenEmMemoria = token;
+    try {
+      localStorage.setItem(CHAVE_TOKEN_SESSAO, token);
+    } catch {
+      // Armazenamento indisponível; o token permanece ativo em memória durante a sessão.
+    }
+  }
+
+  private removerToken(): void {
+    this.tokenEmMemoria = null;
+    try {
+      localStorage.removeItem(CHAVE_TOKEN_SESSAO);
     } catch {
       // Ignora indisponibilidade do armazenamento.
     }
