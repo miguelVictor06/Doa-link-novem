@@ -55,9 +55,9 @@ router.post('/login', limitadorAutenticacao, async (req, res, next) => {
     }
 
     const usuario = usuarioPublico(registro, true);
-    await criarSessao(req, res, usuario);
+    const token = await criarSessao(req, res, usuario);
 
-    res.json(usuario);
+    res.json({ ...usuario, token });
   } catch (erro) {
     next(erro);
   }
@@ -144,9 +144,9 @@ router.post('/cadastrar', limitadorAutenticacao, async (req, res, next) => {
       return usuarioPublico(novoUsuario, true);
     });
 
-    await criarSessao(req, res, usuario);
+    const token = await criarSessao(req, res, usuario);
 
-    res.status(201).json(usuario);
+    res.status(201).json({ ...usuario, token });
   } catch (erro) {
     next(erro);
   }
