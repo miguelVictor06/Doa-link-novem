@@ -1,8 +1,16 @@
+
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/hub', pathMatch: 'full' },
+
+  {
+    path: 'index.html',
+    redirectTo: '/hub',
+    pathMatch: 'full'
+  },
+
   {
     path: 'login',
     loadComponent: () =>
@@ -61,5 +69,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/sobre/sobre.component').then(m => m.SobreComponent)
   },
+
   { path: '**', redirectTo: '/login' }
 ];
