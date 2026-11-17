@@ -47,7 +47,7 @@ export class HubComponent implements OnInit {
           this.router.navigate(['/mensagens'], { queryParams: { com: doacao.id_doador } });
           return;
         }
-        this.mensagemSucesso.set('Solicita  ǜo registrada! O item continua dispon  vel para outras pessoas.');
+        this.mensagemSucesso.set('Solicitação registrada! O item continua disponível para outras pessoas.');
       },
       error: (erro) => {
         console.error('Erro ao solicitar item:', erro);
