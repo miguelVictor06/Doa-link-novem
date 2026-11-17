@@ -50,12 +50,15 @@ services:
       - key: NODE_VERSION
         value: "22"
       - key: API_URL
-        value: https://doalink-backend-7q4s.onrender.com/api
+        value: /api
     headers:
       - path: /config.js
         name: Cache-Control
         value: no-cache
     routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://doalink-backend-7q4s.onrender.com/api/*
       - type: rewrite
         source: /*
         destination: /index.html
