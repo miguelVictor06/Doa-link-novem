@@ -8,6 +8,19 @@ function hashToken(token) {
   return crypto.createHash('sha256').update(token).digest('hex');
 }
 
+function extrairToken(req) {
+  const authHeader = req.get?.('authorization') || req.headers?.authorization;
+
+  if (typeof authHeader === 'string' && authHeader.toLowerCase().startsWith('bearer ')) {
+    const tokenHeader = authHeader.slice(7).trim();
+    if (tokenHeader) {
+      return tokenHeader;
+    }
+  }
+
+  return req.cookies?.[NOME_COOKIE] || null;
+}
+
 function requisicaoSegura(req) {
   if (req?.secure) {
     return true;
@@ -52,11 +65,12 @@ async function criarSessao(req, res, usuario) {
   );
 
   res.cookie(NOME_COOKIE, token, opcoesCookie(req));
+  return token;
 }
 
 async function autenticar(req, res, next) {
   try {
-    const token = req.cookies?.[NOME_COOKIE];
+    const token = extrairToken(req);
 
     if (!token) {
       return res.status(401).json({ erro: 'Não autenticado.' });
@@ -106,7 +120,7 @@ async function autenticar(req, res, next) {
 }
 
 async function encerrarSessao(req, res) {
-  const token = req.cookies?.[NOME_COOKIE];
+  const token = extrairToken(req);
 
   if (token) {
     await consultar('DELETE FROM sessao WHERE token_hash = $1', [hashToken(token)]);
