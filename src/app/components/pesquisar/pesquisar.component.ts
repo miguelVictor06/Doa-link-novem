@@ -122,13 +122,20 @@ export class PesquisarComponent implements OnInit {
     );
   }
 
-  private itemCorresponde(item: ItemDoacao, termo: string): boolean {
-    const titulo = (item.titulo ?? '').toLowerCase();
-    const descricao = (item.descricao ?? '').toLowerCase();
+private itemCorresponde(item: ItemDoacao, termo: string): boolean {
+  const normalizar = (texto: string): string =>
+    texto
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
 
-    return titulo.includes(termo) || descricao.includes(termo);
-  }
+  const titulo = normalizar(item.titulo ?? '');
+  const descricao = normalizar(item.descricao ?? '');
+  const pesquisa = normalizar(termo);
 
+  return titulo.includes(pesquisa) || descricao.includes(pesquisa);
+}
   private escolherMensagemVazia(termo: string): string {
     const termoNormalizado = termo.trim();
 
