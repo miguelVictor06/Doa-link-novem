@@ -1,3 +1,4 @@
+
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { DoacaoService } from '../../services/doacao.service';
@@ -20,9 +21,13 @@ export class PesquisarComponent implements OnInit {
 
   public readonly doacoesDisponiveis = signal<readonly ItemDoacao[]>([]);
 
-  public readonly resultados = computed(() => this.filtrarDoacoes(this.termoPesquisa()));
+  public readonly resultados = computed(() =>
+    this.filtrarDoacoes(this.termoPesquisa())
+  );
 
-  public readonly mensagemVazia = computed(() => this.escolherMensagemVazia(this.termoPesquisa()));
+  public readonly mensagemVazia = computed(() =>
+    this.escolherMensagemVazia(this.termoPesquisa())
+  );
 
   ngOnInit(): void {
     this.carregarDoacoes();
@@ -40,21 +45,44 @@ export class PesquisarComponent implements OnInit {
   public solicitarItem(idItem: number): void {
     this.mensagemErro.set('');
     this.mensagemSucesso.set('');
+
     const idReceptor = this.authService.obterIdUsuario();
 
     if (!idReceptor) {
-      this.mensagemErro.set('Você precisa estar logado para solicitar um item.');
+      this.mensagemErro.set(
+        'Você precisa estar logado para solicitar um item.'
+      );
+      return;
+    }
+
+    const doacao = this.doacoesDisponiveis().find(
+      item => item.id_item === idItem
+    );
+
+    if (!doacao) {
+      this.mensagemErro.set('Esta doação não está disponível.');
+      return;
+    }
+
+    if (Number(doacao.id_doador) === Number(idReceptor)) {
+      this.mensagemErro.set(
+        'Você não pode solicitar uma doação publicada pela sua própria conta.'
+      );
       return;
     }
 
     this.doacaoService.solicitarItem(idItem).subscribe({
       next: () => {
-        this.mensagemSucesso.set('Solicitação registrada! O item continua disponível para outras pessoas.');
+        this.mensagemSucesso.set(
+          'Solicitação registrada! O item continua disponível para outras pessoas.'
+        );
       },
       error: (erro) => {
         console.error('Erro ao solicitar item:', erro);
+
         this.mensagemErro.set(
-          erro?.error?.erro ?? 'Não foi possível solicitar este item. Tente novamente.'
+          erro?.error?.erro ??
+          'Não foi possível solicitar este item. Tente novamente.'
         );
       }
     });
@@ -67,40 +95,46 @@ export class PesquisarComponent implements OnInit {
 
     this.doacaoService.buscarDoacoesDisponiveis().subscribe({
       next: (itens) => {
-        this.doacoesDisponiveis.set(this.filtrarItensProprios(itens));
+        this.doacoesDisponiveis.set(itens);
         this.isLoading.set(false);
       },
-      error: () => {
-        this.mensagemErro.set('Não foi possível carregar as doações.');
+      error: (erro) => {
+        console.error('Erro ao carregar doações:', erro);
+
+        this.mensagemErro.set(
+          'Não foi possível carregar as doações.'
+        );
+
         this.isLoading.set(false);
       }
     });
   }
 
-  private filtrarItensProprios(itens: ItemDoacao[]): ItemDoacao[] {
-    const idUsuario = this.authService.obterIdUsuario();
-
-    if (!idUsuario) return itens;
-
-    return itens.filter(item => item.id_doador !== idUsuario);
-  }
-
   private filtrarDoacoes(termo: string): readonly ItemDoacao[] {
     const termoNormalizado = termo.trim().toLowerCase();
 
-    if (!termoNormalizado) return this.doacoesDisponiveis();
+    if (!termoNormalizado) {
+      return this.doacoesDisponiveis();
+    }
 
-    return this.doacoesDisponiveis().filter(item => this.itemCorresponde(item, termoNormalizado));
+    return this.doacoesDisponiveis().filter(item =>
+      this.itemCorresponde(item, termoNormalizado)
+    );
   }
 
   private itemCorresponde(item: ItemDoacao, termo: string): boolean {
-    return item.titulo.toLowerCase().includes(termo) || item.descricao.toLowerCase().includes(termo);
+    const titulo = (item.titulo ?? '').toLowerCase();
+    const descricao = (item.descricao ?? '').toLowerCase();
+
+    return titulo.includes(termo) || descricao.includes(termo);
   }
 
   private escolherMensagemVazia(termo: string): string {
     const termoNormalizado = termo.trim();
 
-    if (!termoNormalizado) return 'Nenhuma doação disponível no momento.';
+    if (!termoNormalizado) {
+      return 'Nenhuma doação disponível no momento.';
+    }
 
     return `Nenhum resultado encontrado para "${termoNormalizado}".`;
   }
