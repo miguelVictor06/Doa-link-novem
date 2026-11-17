@@ -1,3 +1,4 @@
+
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -33,26 +34,46 @@ export class HubComponent implements OnInit {
   solicitarItem(idItem: number): void {
     this.mensagemErro.set('');
     this.mensagemSucesso.set('');
-    const idReceptor = this.authService.obterIdUsuario();
 
-    if (!idReceptor) {
-      this.mensagemErro.set('Você precisa estar logado para solicitar um item.');
+    const idUsuario = this.authService.obterIdUsuario();
+
+    if (!idUsuario) {
+      this.mensagemErro.set(
+        'Você precisa estar logado para solicitar um item.'
+      );
+      return;
+    }
+
+    const doacao = this.doacoesDisponiveis().find(
+      item => item.id_item === idItem
+    );
+
+    if (!doacao) {
+      this.mensagemErro.set(
+        'Esta doação não está disponível.'
+      );
+      return;
+    }
+
+    if (Number(doacao.id_doador) === Number(idUsuario)) {
+      this.mensagemErro.set(
+        'Você não pode solicitar uma doação publicada pela sua própria conta.'
+      );
       return;
     }
 
     this.doacaoService.solicitarItem(idItem).subscribe({
       next: () => {
-        const doacao = this.doacoesDisponiveis().find(item => item.id_item === idItem);
-        if (doacao) {
-          this.router.navigate(['/mensagens'], { queryParams: { com: doacao.id_doador } });
-          return;
-        }
-        this.mensagemSucesso.set('Solicita��ǜo registrada! O item continua dispon��vel para outras pessoas.');
+        this.router.navigate(['/mensagens'], {
+          queryParams: { com: doacao.id_doador }
+        });
       },
       error: (erro) => {
         console.error('Erro ao solicitar item:', erro);
+
         this.mensagemErro.set(
-          erro?.error?.erro ?? 'Não foi possível solicitar este item. Tente novamente.'
+          erro?.error?.erro ??
+          'Não foi possível solicitar este item. Tente novamente.'
         );
       }
     });
@@ -65,20 +86,18 @@ export class HubComponent implements OnInit {
 
     this.doacaoService.buscarDoacoesDisponiveis().subscribe({
       next: (itens) => {
-        //this.doacoesDisponiveis.set(this.filtrarItensProprios(itens));
         this.doacoesDisponiveis.set(itens);
         this.isLoading.set(false);
       },
       error: (erro) => {
         console.error('Erro ao buscar doações:', erro);
-        this.mensagemErro.set('Não foi possível carregar as doações.');
+
+        this.mensagemErro.set(
+          'Não foi possível carregar as doações.'
+        );
+
         this.isLoading.set(false);
       }
     });
-  }
-
-  private filtrarItensProprios(itens: ItemDoacao[]): ItemDoacao[] {
-    const idUsuario = this.authService.obterIdUsuario();
-    return itens.filter(item => item.id_doador !== idUsuario);
   }
 }
