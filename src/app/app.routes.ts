@@ -6,7 +6,7 @@ export const routes: Routes = [
   { path: '', redirectTo: '/hub', pathMatch: 'full' },
 
   {
-    path: 'index.html',
+    path: 'hub',
     redirectTo: '/hub',
     pathMatch: 'full'
   },
