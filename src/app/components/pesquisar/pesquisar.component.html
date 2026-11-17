@@ -68,15 +68,27 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         @for (doacao of resultados(); track doacao.id_item) {
           <article class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-            <div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center">
-              <div class="flex flex-col items-center gap-2 text-outline">
-                <span class="material-symbols-outlined text-[48px]">image</span>
-                <span class="font-label-sm text-label-sm">Sem imagem</span>
-              </div>
-              <div class="absolute top-3 left-3 bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-1 rounded-full shadow-sm">
-                Disponível
-              </div>
-            </div>
+<div class="relative w-full aspect-square bg-surface-container-low flex items-center justify-center overflow-hidden">
+
+  @if (doacao.foto) {
+    <img
+      [src]="doacao.foto"
+      [alt]="doacao.titulo"
+      class="w-full h-full object-cover"
+      loading="lazy"
+    />
+  } @else {
+    <div class="flex flex-col items-center gap-2 text-outline">
+      <span class="material-symbols-outlined text-[48px]">image</span>
+      <span class="font-label-sm text-label-sm">Sem imagem</span>
+    </div>
+  }
+
+  <div class="absolute top-3 left-3 bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-1 rounded-full shadow-sm">
+    Disponível
+  </div>
+
+</div>
             <div class="p-4 flex flex-col flex-1 gap-3">
               <h3 class="font-label-md text-label-md text-on-surface truncate">{{ doacao.titulo }}</h3>
               <p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">{{ doacao.descricao }}</p>
