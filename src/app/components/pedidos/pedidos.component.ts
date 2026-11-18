@@ -10,6 +10,7 @@ import {
   CategoriaPedido,
   OrdemPedido
 } from '../../models/pedido-necessidade.model';
+import { formatarTelefone } from '../../utils/telefone';
 
 type CategoriaFiltro = 'Todos' | CategoriaPedido;
 
@@ -35,6 +36,8 @@ const ICONES_CATEGORIA: Record<CategoriaPedido, string> = {
   styleUrl: './pedidos.component.css'
 })
 export class PedidosComponent implements OnInit {
+  readonly formatarTelefone = formatarTelefone;
+
   private readonly pedidoService = inject(PedidoService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);

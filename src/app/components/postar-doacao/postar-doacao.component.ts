@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { DoacaoService } from '../../services/doacao.service';
+import { aplicarMascaraTelefoneNoControle, validarTelefone } from '../../utils/telefone';
 
 @Component({
   selector: 'app-postar-doacao',
@@ -10,6 +11,8 @@ import { DoacaoService } from '../../services/doacao.service';
   styleUrl: './postar-doacao.component.css'
 })
 export class PostarDoacaoComponent implements OnInit {
+  @ViewChild('telefoneInput') telefoneInput?: ElementRef<HTMLInputElement>;
+
   formularioDoacao: FormGroup;
   arquivoFoto: File | null = null;
   previewFoto: string | null = null;
@@ -24,12 +27,14 @@ export class PostarDoacaoComponent implements OnInit {
     this.formularioDoacao = this.formBuilder.group({
       itemName: ['', Validators.required],
       condition: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.minLength(10)]],
+      phone: ['', [Validators.required, validarTelefone]],
       description: ['', Validators.required]
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.observarMascaraTelefone();
+  }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -81,8 +86,16 @@ export class PostarDoacaoComponent implements OnInit {
       return '';
     }
     if (controle.errors['required']) return 'Este campo é obrigatório.';
-    if (controle.errors['minlength']) return 'Telefone muito curto.';
+    if (controle.errors['telefoneInvalido']) return 'Informe o telefone com DDD (11 dígitos).';
     return '';
+  }
+
+  private observarMascaraTelefone(): void {
+    const controle = this.formularioDoacao.get('phone');
+
+    controle?.valueChanges.subscribe(() => {
+      aplicarMascaraTelefoneNoControle(controle, this.telefoneInput?.nativeElement);
+    });
   }
 
   private processarArquivo(arquivo: File): void {

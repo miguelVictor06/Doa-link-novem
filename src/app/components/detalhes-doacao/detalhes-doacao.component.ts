@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DoacaoService } from '../../services/doacao.service';
 import { ItemDoacao } from '../../models/item-doacao.model';
+import { formatarTelefone } from '../../utils/telefone';
 
 @Component({
   selector: 'app-detalhes-doacao',
@@ -11,6 +12,7 @@ import { ItemDoacao } from '../../models/item-doacao.model';
   styleUrl: './detalhes-doacao.component.css'
 })
 export class DetalhesDoacaoComponent implements OnInit {
+  readonly formatarTelefone = formatarTelefone;
   readonly doacao = signal<ItemDoacao | null>(null);
   readonly isLoading = signal(true);
   readonly mensagemErro = signal('');
@@ -53,7 +55,7 @@ export class DetalhesDoacaoComponent implements OnInit {
       return;
     }
 
-    navigator.clipboard.writeText(telefone).then(() => {
+    navigator.clipboard.writeText(formatarTelefone(telefone)).then(() => {
       this.telefoneCopiado.set(true);
       setTimeout(() => this.telefoneCopiado.set(false), 2000);
     });

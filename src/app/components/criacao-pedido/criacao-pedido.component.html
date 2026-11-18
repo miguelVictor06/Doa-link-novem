@@ -160,10 +160,13 @@
               <span class="material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">phone</span>
             </div>
             <input
+              #telefoneInput
               formControlName="telefone"
               id="telefonePedido"
               type="tel"
-              placeholder="(00) 00000-0000"
+              placeholder="(31) 99999-9999"
+              inputmode="numeric"
+              autocomplete="tel"
               class="block w-full pl-12 pr-4 py-3.5 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             />
             <span class="text-error text-sm mt-1 block">{{ obterErroCampo('telefone') }}</span>

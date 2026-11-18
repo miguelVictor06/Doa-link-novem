@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PedidoService } from '../../services/pedido.service';
@@ -7,6 +7,7 @@ import {
   CategoriaPedido,
   UrgenciaPedido
 } from '../../models/pedido-necessidade.model';
+import { aplicarMascaraTelefoneNoControle, validarTelefone } from '../../utils/telefone';
 
 const LIMITE_DESCRICAO = 800;
 
@@ -17,6 +18,8 @@ const LIMITE_DESCRICAO = 800;
   styleUrl: './criacao-pedido.component.css'
 })
 export class CriacaoPedidoComponent implements OnInit {
+  @ViewChild('telefoneInput') telefoneInput?: ElementRef<HTMLInputElement>;
+
   private readonly pedidoService = inject(PedidoService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -45,13 +48,14 @@ export class CriacaoPedidoComponent implements OnInit {
       cidade: ['', Validators.required],
       quantidade: [1, [Validators.required, Validators.min(1)]],
       descricao: ['', [Validators.required, Validators.maxLength(LIMITE_DESCRICAO)]],
-      telefone: ['', [Validators.required, Validators.minLength(10)]]
+      telefone: ['', [Validators.required, validarTelefone]]
     });
   }
 
   ngOnInit(): void {
     this.aplicarCategoriaDaUrl();
     this.observarContadorDeCaracteres();
+    this.observarMascaraTelefone();
   }
 
   obterErroCampo(nomeCampo: string): string {
@@ -65,8 +69,8 @@ export class CriacaoPedidoComponent implements OnInit {
       return 'Este campo é obrigatório.';
     }
 
-    if (controle.errors['minlength']) {
-      return 'Telefone muito curto.';
+    if (controle.errors['telefoneInvalido']) {
+      return 'Informe o telefone com DDD (11 dígitos).';
     }
 
     if (controle.errors['min']) {
@@ -118,6 +122,14 @@ export class CriacaoPedidoComponent implements OnInit {
   private mensagemSucesso(): void {
     this.redirecionando.set(true);
     this.router.navigate(['/pedidos'], { queryParams: { publicado: '1' } });
+  }
+
+  private observarMascaraTelefone(): void {
+    const controle = this.formularioPedido.get('telefone');
+
+    controle?.valueChanges.subscribe(() => {
+      aplicarMascaraTelefoneNoControle(controle, this.telefoneInput?.nativeElement);
+    });
   }
 
   private aplicarCategoriaDaUrl(): void {
